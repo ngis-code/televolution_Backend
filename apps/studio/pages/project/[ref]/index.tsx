@@ -54,21 +54,7 @@ const Home: NextPageWithLayout = () => {
         {IS_PLATFORM && project?.status !== PROJECT_STATUS.INACTIVE && <ProjectUsageSection />}
       </div>
 
-      {project?.status !== PROJECT_STATUS.INACTIVE && (
-        <>
-          <div className="space-y-8">
-            <div className="mx-6">
-              <h4 className="text-lg">Client libraries</h4>
-            </div>
-            <div className="grid gap-12 mx-6 mb-12 md:grid-cols-3">
-              {CLIENT_LIBRARIES.map((library) => (
-                <ClientLibrary key={library.language} {...library} />
-              ))}
-            </div>
-          </div>
-         
-        </>
-      )}
+      
     </div>
   )
 }
