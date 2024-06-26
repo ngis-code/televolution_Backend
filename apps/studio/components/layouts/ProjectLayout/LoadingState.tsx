@@ -9,7 +9,7 @@ const LoadingState = () => {
   const projectName =
     ref !== 'default'
       ? allProjects?.find((project) => project.ref === ref)?.name
-      : 'Welcome to Televolution'
+      : 'Hi to Televolution'
 
   return (
     <div className="w-full mx-auto my-16 space-y-16 max-w-7xl">

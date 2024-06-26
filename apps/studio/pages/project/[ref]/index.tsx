@@ -32,7 +32,7 @@ const Home: NextPageWithLayout = () => {
   const projectName =
     project?.ref !== 'default' && project?.name !== undefined
       ? project?.name
-      : 'Welcome to Televolution'
+      : 'HI to Televolution'
 
   return (
     <div className="w-full mx-auto my-16 space-y-16 max-w-7xl">
