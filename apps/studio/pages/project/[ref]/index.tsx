@@ -39,8 +39,10 @@ const Home: NextPageWithLayout = () => {
       <div className="flex items-center justify-between mx-6 space-x-6">
         <h1 className="text-3xl">{projectName}</h1>
         <div className="flex items-center gap-x-3">
-          {IS_PLATFORM && project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && <ServiceStatus />}
-          {IS_PLATFORM && project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && <Connect />}
+          {/* {IS_PLATFORM && project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && <ServiceStatus />}
+          {IS_PLATFORM && project?.status === PROJECT_STATUS.ACTIVE_HEALTHY && <Connect />} */}
+          <ServiceStatus />
+          <Connect />
         </div>
       </div>
 
@@ -48,13 +50,11 @@ const Home: NextPageWithLayout = () => {
         <ProjectUpgradeFailedBanner />
       </div>
 
-      {project?.status === PROJECT_STATUS.INACTIVE && <ProjectPausedState />}
-
-      <div className="mx-6">
-        {IS_PLATFORM && project?.status !== PROJECT_STATUS.INACTIVE && <ProjectUsageSection />}
-      </div>
-
-      
+      {/* {project?.status === PROJECT_STATUS.INACTIVE && <ProjectPausedState />} */}
+      {/* <ProjectPausedState /> */}
+      {/* <div className="mx-6">
+        <ProjectUsageSection />
+      </div> */}      
     </div>
   )
 }
