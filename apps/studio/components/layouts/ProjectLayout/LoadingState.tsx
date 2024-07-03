@@ -21,10 +21,6 @@ const LoadingState = () => {
         )}
       </div>
 
-      <div className="mx-6">
-        <ProjectUsageLoadingState />
-      </div>
-
       <div className="mx-6 space-y-4">
         <ShimmeringLoader className="w-40 h-7" />
         <ShimmeringLoader className="w-full h-32" />
