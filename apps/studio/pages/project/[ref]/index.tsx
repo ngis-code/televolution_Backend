@@ -1,16 +1,10 @@
 import { useEffect, useRef } from 'react'
 
 import { useParams } from 'common'
-import { ClientLibrary, ExampleProject } from 'components/interfaces/Home'
 import Connect from 'components/interfaces/Home/Connect/Connect'
-import { CLIENT_LIBRARIES, EXAMPLE_PROJECTS } from 'components/interfaces/Home/Home.constants'
-import ProjectUsageSection from 'components/interfaces/Home/ProjectUsageSection'
 import ServiceStatus from 'components/interfaces/Home/ServiceStatus'
 import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectLayout'
-import ProjectPausedState from 'components/layouts/ProjectLayout/ProjectPausedState'
-import ProjectUpgradeFailedBanner from 'components/ui/ProjectUpgradeFailedBanner'
 import { useSelectedProject } from 'hooks'
-import { IS_PLATFORM, PROJECT_STATUS } from 'lib/constants'
 import { useAppStateSnapshot } from 'state/app-state'
 import type { NextPageWithLayout } from 'types'
 
@@ -45,11 +39,11 @@ const Home: NextPageWithLayout = () => {
           <Connect />
         </div>
       </div>
-      
+
       <div className="mx-6">
-        <iframe src="https://mytvpocroyal.com/web" title="Google" style={{ width: '100%', height: '600px', border: 'none' }}></iframe>
+        <iframe src="https://mytvpocroyal.com/status_monitor" title="Status Monitor" style={{ width: '100%', height: '600px', border: 'none' }}></iframe>
       </div>
-      
+
     </div>
   )
 }
