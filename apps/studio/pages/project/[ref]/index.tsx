@@ -49,12 +49,6 @@ const Home: NextPageWithLayout = () => {
       <div className="mx-6">
         <ProjectUpgradeFailedBanner />
       </div>
-
-      {project?.status === PROJECT_STATUS.INACTIVE && <ProjectPausedState />}
-
-      <div className="mx-6">
-        {IS_PLATFORM && project?.status !== PROJECT_STATUS.INACTIVE && <ProjectUsageSection />}
-      </div>
       
       <div className="mx-6">
         <iframe src="https://mytvpocroyal.com/web" title="Google" style={{ width: '100%', height: '600px', border: 'none' }}></iframe>
