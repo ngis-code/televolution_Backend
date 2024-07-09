@@ -43,6 +43,9 @@ const Home: NextPageWithLayout = () => {
       <div className="mx-6">
         <iframe src="https://mytvpocroyal.com/status_monitor" title="Status Monitor" style={{ width: '100%', height: '600px', border: 'none' }}></iframe>
       </div>
+      <div className="mx-6">
+        <iframe src="http://localhost:3000" title="Uptime" style={{ width: '100%', height: '800px', border: 'none' }}></iframe>
+      </div>
 
     </div>
   )
