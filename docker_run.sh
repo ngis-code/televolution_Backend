@@ -1,31 +1,43 @@
 #!/bin/bash
 
-# Define the repository and target tag
-TARGET_TAG="studio:latest"
+RED='\033[0;31m'
+NC='\033[0m' # No Color
 
-docker pull node:20-slim    
+error_exit() {
+    echo -e "${RED}$1${NC}" 1>&2
+    exit 1
+}
 
-# Build the Docker image for the specified target
-sudo docker build . -f apps/studio/Dockerfile --target production -t $TARGET_TAG || { echo "Docker build failed"; exit 1; }
+sudo -i || error_exit "Failed to switch to root user."
 
-# Navigate into the docker directory
-cd docker || { echo "Directory docker does not exist"; exit 1; }
+docker login || error_exit "Docker login failed."
 
-# Copy the example environment file
-sudo cp .env.example .env || { echo "Failed to copy .env file"; exit 1; }
+docker pull node:20-slim || error_exit "Docker pull failed."
 
-# Pull the Docker images using the alternate docker-compose file
-docker compose -f docker-compose2.yml pull || { echo "Docker compose pull failed"; exit 1; }
+docker build . -f apps/studio/Dockerfile --target production -t studio:latest || error_exit "Docker build failed."
 
-# Start the Docker containers in detached mode using the main docker-compose file
-docker compose up -d || { echo "Docker compose up failed"; exit 1; }
+cd docker || error_exit "Directory docker does not exist."
+
+cp .env.example .env || error_exit "Failed to copy .env file."
+
+docker compose -f docker-compose2.yml pull || error_exit "Docker compose pull failed."
+
+docker compose up -d || error_exit "Docker compose up failed."
+
+cd .. 
 
 echo "Televolution Backend setup completed successfully."
 
-git clone https://github.com/ngis-code/Televolution_monitor
+if [ -d "Televolution_monitor" ]; then
+    echo "Directory Televolution_monitor already exists."
+else
+    git clone https://github.com/ngis-code/Televolution_monitor || error_exit "Git clone failed."
+fi
 
-cd Televolution_monitor
+cd Televolution_monitor || error_exit "Directory Televolution_monitor does not exist."
 
-docker build -t televolution_monitor .
+docker build -t televolution_monitor . || error_exit "Docker build failed."
 
-docker run -p 3001:3001 televolution_monitor
+docker run -p 3001:3001 televolution_monitor || error_exit "Docker run failed."
+
+echo "Televolution Monitor setup completed successfully."
