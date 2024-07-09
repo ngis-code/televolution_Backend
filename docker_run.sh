@@ -20,4 +20,12 @@ docker compose -f docker-compose2.yml pull || { echo "Docker compose pull failed
 # Start the Docker containers in detached mode using the main docker-compose file
 docker compose up -d || { echo "Docker compose up failed"; exit 1; }
 
-echo "Setup completed successfully."
+echo "Televolution Backend setup completed successfully."
+
+git clone https://github.com/ngis-code/Televolution_monitor
+
+cd Televolution_monitor
+
+docker build -t televolution_monitor .
+
+docker run -p 3001:3001 televolution_monitor
