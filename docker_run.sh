@@ -8,7 +8,9 @@ error_exit() {
     exit 1
 }
 
-sudo -i || error_exit "Failed to switch to root user."
+if [ "$EUID" -ne 0 ]; then
+    error_exit "This script must be run as root. Enter command 'sudo -i' and then run this script."
+fi
 
 docker login || error_exit "Docker login failed."
 
