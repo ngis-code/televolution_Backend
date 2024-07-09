@@ -44,7 +44,7 @@ const Home: NextPageWithLayout = () => {
         <iframe src="https://mytvpocroyal.com/status_monitor" title="Status Monitor" style={{ width: '100%', height: '600px', border: 'none' }}></iframe>
       </div>
       <div className="mx-6">
-        <iframe src="http://localhost:3000" title="Uptime" style={{ width: '100%', height: '800px', border: 'none' }}></iframe>
+        <iframe src="http://localhost:3001" title="Televolution Monitor" style={{ width: '100%', height: '1000px', border: 'none' }}></iframe>
       </div>
 
     </div>
