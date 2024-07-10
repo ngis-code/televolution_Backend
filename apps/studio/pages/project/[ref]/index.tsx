@@ -42,7 +42,7 @@ const Home: NextPageWithLayout = () => {
         </div>
       </div>
       <div className="mx-6">
-        <iframe src="http://localhost:3001" title="Televolution Monitor" style={{ width: '100%', height: '1000px', border: 'none' }}></iframe>
+        <iframe src="http://localhost:3001/status/services" title="Televolution Monitor" style={{ width: '100%', height: '1000px', border: 'none' }}></iframe>
       </div>
     </div>
   )
