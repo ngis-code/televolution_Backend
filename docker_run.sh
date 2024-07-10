@@ -40,6 +40,8 @@ cd Televolution_monitor || error_exit "Directory Televolution_monitor does not e
 
 docker build -t televolution_monitor . || error_exit "Docker build failed."
 
-docker run -p 3001:3001 televolution_monitor || error_exit "Docker run failed."
+docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
+
+# docker run -p 3001:3001 televolution_monitor || error_exit "Docker run failed."
 
 echo "Televolution Monitor setup completed successfully."
