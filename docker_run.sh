@@ -36,6 +36,8 @@ fi
 
 cd Televolution_monitor || error_exit "Directory Televolution_monitor does not exist."
 
+git pull || error_exit "Git pull failed."
+
 docker build -t televolution_monitor . || error_exit "Docker build failed."
 
 docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
