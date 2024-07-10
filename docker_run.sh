@@ -8,11 +8,9 @@ error_exit() {
     exit 1
 }
 
-if [ "$EUID" -ne 0 ]; then
-    error_exit "This script must be run as root. Enter command 'sudo -i' and then run this script."
-fi
-
 docker login || error_exit "Docker login failed."
+
+docker builder prune || error_exit "Docker builder prune failed."
 
 docker pull node:20-slim || error_exit "Docker pull failed."
 
