@@ -109,10 +109,10 @@ const nextConfig = {
             key: 'X-Robots-Tag',
             value: 'all',
           },
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
+          // {
+          //   key: 'X-Frame-Options',
+          //   value: 'DENY',
+          // },
         ],
       },
     ]
