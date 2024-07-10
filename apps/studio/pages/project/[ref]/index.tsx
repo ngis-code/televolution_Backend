@@ -39,10 +39,6 @@ const Home: NextPageWithLayout = () => {
           <Connect />
         </div>
       </div>
-
-      <div className="mx-6">
-        <iframe src="https://mytvpocroyal.com/status_monitor" title="Status Monitor" style={{ width: '100%', height: '600px', border: 'none' }}></iframe>
-      </div>
       <div className="mx-6">
         <iframe src="http://localhost:3001" title="Televolution Monitor" style={{ width: '100%', height: '1000px', border: 'none' }}></iframe>
       </div>
