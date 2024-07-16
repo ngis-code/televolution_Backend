@@ -60,7 +60,7 @@ if prompt_continue "televolution monitor"; then
 
     docker build -t televolution_monitor:$latestMonitorReleasedVersion . || error_exit "Docker build failed."
 
-    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor:$latestMonitorReleasedVersion televolution_monitor:$latestMonitorReleasedVersion
+    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$latestMonitorReleasedVersion
 
     echo "Televolution Monitor setup completed successfully."
 
