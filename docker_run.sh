@@ -51,7 +51,7 @@ cd ..
 if [ -d "televolution_functions" ]; then
     echo "Directory televolution_functions already exists."
 else
-    git clone https://github.com/ShivanshuKGupta/televolution_functions.git || error_exit "Git clone failed."
+    git clone https://github.com/ngis-code/televolution_Middleware || error_exit "Git clone failed."
 fi
 
 cd televolution_functions || error_exit "Directory televolution_functions does not exist."
