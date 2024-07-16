@@ -38,11 +38,15 @@ cd Televolution_monitor || error_exit "Directory Televolution_monitor does not e
 
 git pull || error_exit "Git pull failed."
 
-docker build -t televolution_monitor . || error_exit "Docker build failed."
+latestMonitorReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
 
-docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
+echo "Building version: $latestMonitorReleasedVersion"
 
-# docker run -p 3001:3001 televolution_monitor || error_exit "Docker run failed."
+docker build -t televolution_monitor:$latestMonitorReleasedVersion . || error_exit "Docker build failed."
+
+docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor:$latestMonitorReleasedVersion televolution_monitor:$latestMonitorReleasedVersion
+
+# docker run -p 3001:3001 televolution_monitor:$latestMonitorReleasedVersion || error_exit "Docker run failed."
 
 echo "Televolution Monitor setup completed successfully."
 
@@ -58,13 +62,13 @@ cd televolution_Middleware || error_exit "Directory televolution_Middleware does
 
 git pull || error_exit "Git pull failed."
 
-latestReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
-# latestReleasedVersion=$(./get-latest-release-tag.sh)
+latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+# latestMiddlewareReleasedVersion=$(./get-latest-release-tag.sh)
 
-echo "Building version: $latestReleasedVersion"
+echo "Building version: $latestMiddlewareReleasedVersion"
 
-docker build -t televolution_middleware:$latestReleasedVersion . || error_exit "Docker build failed."
+docker build -t televolution_middleware:$latestMiddlewareReleasedVersion . || error_exit "Docker build failed."
 
-docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestReleasedVersion
+docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
 
 echo "Televolution Monitor setup completed successfully."
