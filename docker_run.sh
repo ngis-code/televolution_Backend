@@ -48,23 +48,23 @@ echo "Televolution Monitor setup completed successfully."
 
 cd ..
 
-if [ -d "televolution_functions" ]; then
-    echo "Directory televolution_functions already exists."
+if [ -d "televolution_Middleware" ]; then
+    echo "Directory televolution_Middleware already exists."
 else
     git clone https://github.com/ngis-code/televolution_Middleware || error_exit "Git clone failed."
 fi
 
-cd televolution_functions || error_exit "Directory televolution_functions does not exist."
+cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
 
 git pull || error_exit "Git pull failed."
 
-# latestReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
-latestReleasedVersion=$(./get-latest-release-tag.sh)
+latestReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+# latestReleasedVersion=$(./get-latest-release-tag.sh)
 
 echo "Building version: $latestReleasedVersion"
 
-docker build -t televolution_functions:$latestReleasedVersion . || error_exit "Docker build failed."
+docker build -t televolution_Middleware:$latestReleasedVersion . || error_exit "Docker build failed."
 
-docker run -d --restart=always -p 3000:3000 --name televolution_functions televolution_functions:$latestReleasedVersion
+docker run -d --restart=always -p 3000:3000 --name televolution_Middleware televolution_Middleware:$latestReleasedVersion
 
 echo "Televolution Monitor setup completed successfully."
