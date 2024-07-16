@@ -45,3 +45,21 @@ docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --
 # docker run -p 3001:3001 televolution_monitor || error_exit "Docker run failed."
 
 echo "Televolution Monitor setup completed successfully."
+
+cd ..
+
+if [ -d "televolution_functions" ]; then
+    echo "Directory televolution_functions already exists."
+else
+    git clone https://github.com/ShivanshuKGupta/televolution_functions.git || error_exit "Git clone failed."
+fi
+
+cd televolution_functions || error_exit "Directory televolution_functions does not exist."
+
+git pull || error_exit "Git pull failed."
+
+docker build -t televolution_functions . || error_exit "Docker build failed."
+
+docker run -p 3000:3000 -e PORT=3000 televolution_functions
+
+echo "Televolution Monitor setup completed successfully."
