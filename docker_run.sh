@@ -58,7 +58,8 @@ cd televolution_functions || error_exit "Directory televolution_functions does n
 
 git pull || error_exit "Git pull failed."
 
-latestReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+# latestReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+latestReleasedVersion=$(./get-latest-release-tag.sh)
 
 echo "Building version: $latestReleasedVersion"
 
