@@ -8,25 +8,33 @@ error_exit() {
     exit 1
 }
 
-prompt_continue() {
-    read -p "Do you want to proceed with $1? (y/n): " choice
-    case "$choice" in 
-      y|Y ) echo "Proceeding with $1...";;
-      n|N ) echo "Skipping $1..."; return 1;;
-      * ) echo "Invalid choice"; prompt_continue $1;;
-    esac
-}
+deploy_studio=false
+deploy_monitor=false
+deploy_middleware=false
 
-# Initial setup
-docker login || error_exit "Docker login failed."
+read -p "Do you want to deploy the backend (studio)? (y/n): " deploy_studio_choice
+read -p "Do you want to deploy the monitor? (y/n): " deploy_monitor_choice
+read -p "Do you want to deploy the middleware? (y/n): " deploy_middleware_choice
 
-if prompt_continue "deleting all builds"; then
-    docker builder prune || error_exit "Docker builder prune failed."
-    docker pull node:20-slim || error_exit "Docker pull failed."
+if [[ $deploy_studio_choice == "y" ]]; then
+    deploy_studio=true
 fi
 
-# Building supabase backend services
-if prompt_continue "supabase backend services"; then
+if [[ $deploy_monitor_choice == "y" ]]; then
+    deploy_monitor=true
+fi
+
+if [[ $deploy_middleware_choice == "y" ]]; then
+    deploy_middleware=true
+fi
+
+docker login || error_exit "Docker login failed."
+
+docker builder prune || error_exit "Docker builder prune failed."
+
+docker pull node:20-slim || error_exit "Docker pull failed."
+
+if $deploy_studio; then
     docker build . -f apps/studio/Dockerfile --target production -t studio:latest || error_exit "Docker build failed."
 
     cd docker || error_exit "Directory docker does not exist."
@@ -37,13 +45,12 @@ if prompt_continue "supabase backend services"; then
 
     docker compose up -d || error_exit "Docker compose up failed."
 
-    echo "Televolution Backend setup completed successfully."
-
     cd ..
+
+    echo "Televolution Backend setup completed successfully."
 fi
 
-# Building televolution monitor
-if prompt_continue "televolution monitor"; then
+if $deploy_monitor; then
     if [ -d "Televolution_monitor" ]; then
         echo "Directory Televolution_monitor already exists."
     else
@@ -54,21 +61,20 @@ if prompt_continue "televolution monitor"; then
 
     git pull || error_exit "Git pull failed."
 
-    latestMonitorReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+    latestMonitorReleasedVersion=$(git describe --tags git rev-list --tags --max-count=1)
 
     echo "Building version: $latestMonitorReleasedVersion"
 
-    docker build -t televolution_monitor:$latestMonitorReleasedVersion . || error_exit "Docker build failed."
+    docker build -t televolution_monitor_$latestMonitorReleasedVersion . || error_exit "Docker build failed."
 
-    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$latestMonitorReleasedVersion
+    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor_$latestMonitorReleasedVersion
 
     echo "Televolution Monitor setup completed successfully."
 
     cd ..
 fi
 
-# Building televolution middleware
-if prompt_continue "televolution middleware"; then
+if $deploy_middleware; then
     if [ -d "televolution_Middleware" ]; then
         echo "Directory televolution_Middleware already exists."
     else
@@ -79,7 +85,7 @@ if prompt_continue "televolution middleware"; then
 
     git pull || error_exit "Git pull failed."
 
-    latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+    latestMiddlewareReleasedVersion=$(git describe --tags git rev-list --tags --max-count=1)
 
     echo "Building version: $latestMiddlewareReleasedVersion"
 
@@ -88,4 +94,6 @@ if prompt_continue "televolution middleware"; then
     docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
 
     echo "Televolution Middleware setup completed successfully."
+
+    cd ..
 fi
