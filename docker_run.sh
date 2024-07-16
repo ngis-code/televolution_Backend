@@ -58,8 +58,12 @@ cd televolution_functions || error_exit "Directory televolution_functions does n
 
 git pull || error_exit "Git pull failed."
 
-docker build -t televolution_functions:1.0.0 . || error_exit "Docker build failed."
+latestReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
 
-docker run -d --restart=always -p 3000:3000 --name televolution_functions televolution_functions:1.0.0
+echo "Building version: $latestReleasedVersion"
+
+docker build -t televolution_functions:$latestReleasedVersion . || error_exit "Docker build failed."
+
+docker run -d --restart=always -p 3000:3000 --name televolution_functions televolution_functions:$latestReleasedVersion
 
 echo "Televolution Monitor setup completed successfully."
