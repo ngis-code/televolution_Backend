@@ -63,8 +63,8 @@ latestReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
 
 echo "Building version: $latestReleasedVersion"
 
-docker build -t televolution_Middleware:$latestReleasedVersion . || error_exit "Docker build failed."
+docker build -t televolution_middleware:$latestReleasedVersion . || error_exit "Docker build failed."
 
-docker run -d --restart=always -p 3000:3000 --name televolution_Middleware televolution_Middleware:$latestReleasedVersion
+docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestReleasedVersion
 
 echo "Televolution Monitor setup completed successfully."
