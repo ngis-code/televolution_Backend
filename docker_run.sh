@@ -199,12 +199,12 @@ if $load_images; then
     cd ..
 
     # Running Containers
-    echo "Starting supabase container..."
-    cd docker || error_exit "Directory docker does not exist."
-    cp .env.example .env || error_exit "Failed to copy .env file."
-    docker compose up -d || error_exit "Docker compose up failed."
-    cd ..
-    echo "Televolution Backend setup completed successfully."
+    # echo "Starting supabase container..."
+    # cd docker || error_exit "Directory docker does not exist."
+    # cp .env.example .env || error_exit "Failed to copy .env file."
+    # docker compose up -d || error_exit "Docker compose up failed."
+    # cd ..
+    # echo "Televolution Backend setup completed successfully."
 
     echo "Starting monitor container..."
     docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
