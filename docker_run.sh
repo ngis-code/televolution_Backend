@@ -198,24 +198,21 @@ if $load_images; then
 
     cd ..
 
-    ## WARNING: Below code is in development and not tested yet, we recommend running all the containers manually after loading the images
-    ## Uncomment the following code to run the containers after loading the images
-    # 
-    # echo "Running containers..."
-    # echo "Running supabase container..."
-    # cd docker || error_exit "Directory docker does not exist."
-    # cp .env.example .env || error_exit "Failed to copy .env file."
-    # docker compose up -d || error_exit "Docker compose up failed."
-    # cd ..
-    # echo "Televolution Backend setup completed successfully."
+    # Running Containers
+    echo "Starting supabase container..."
+    cd docker || error_exit "Directory docker does not exist."
+    cp .env.example .env || error_exit "Failed to copy .env file."
+    docker compose up -d || error_exit "Docker compose up failed."
+    cd ..
+    echo "Televolution Backend setup completed successfully."
 
-    # echo "Running monitor container..."
-    # docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
-    # echo "Televolution Monitor setup completed successfully."
+    echo "Starting monitor container..."
+    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
+    echo "Televolution Monitor setup completed successfully."
 
-    # echo "Running middleware container..."
-    # docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware
-    # echo "Televolution Middleware setup completed successfully."
+    echo "Starting middleware container..."
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware
+    echo "Televolution Middleware setup completed successfully."
 
     cd ..
 fi
