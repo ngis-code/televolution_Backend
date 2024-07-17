@@ -120,16 +120,30 @@ if $save_images; then
     fi
 
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
+    
+    echo "Saving supabase image..."
     docker save supabase > supabase.tar
     # docker save studio > studio.tar
+    
+    echo "Saving televolution images..."
     docker save televolution_monitor > televolution_monitor.tar
+
+    echo "Saving televolution middleware..."
     docker save televolution_middleware > televolution_middleware.tar
+
+    echo "Images saved successfully to docker_image_builds directory."
 fi
 
 if $load_images; then
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
+
+    echo "Loading image supabaase..."
     docker load < supabase.tar
     # docker load < studio.tar
+    
+    echo "Loading televolution images..."
     docker load < televolution_monitor.tar
+
+    echo "Loading televolution middleware..."
     docker load < televolution_middleware.tar
 fi
