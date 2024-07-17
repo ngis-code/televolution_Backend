@@ -205,20 +205,17 @@ if $load_images; then
     # echo "Running supabase container..."
     # cd docker || error_exit "Directory docker does not exist."
     # cp .env.example .env || error_exit "Failed to copy .env file."
-    # docker compose -f docker-compose2.yml pull || error_exit "Docker compose pull failed."
     # docker compose up -d || error_exit "Docker compose up failed."
-    # echo "Televolution Backend setup completed successfully."
     # cd ..
+    # echo "Televolution Backend setup completed successfully."
 
     # echo "Running monitor container..."
-    # cd Televolution_monitor || error_exit "Directory Televolution_monitor does not exist."
-    # docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$latestMonitorReleasedVersion
+    # docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
     # echo "Televolution Monitor setup completed successfully."
-    # cd ..
 
     # echo "Running middleware container..."
-    # cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
-    # docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
+    # docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware
     # echo "Televolution Middleware setup completed successfully."
-    # cd ..
+
+    cd ..
 fi
