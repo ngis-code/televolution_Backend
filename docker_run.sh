@@ -121,25 +121,38 @@ if $save_images; then
 
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
     
-    echo "Saving supabase image..."
+    # Supabase Images
+    echo "Saving image: studio"
     docker save studio > studio.tar
+    echo "Saving image: runtime"
     docker save supabase/edge-runtime > edge-runtime.tar
+    echo "Saving image: postgres"
     docker save supabase/postgres > postgres.tar
+    echo "Saving image: gotrue"
     docker save supabase/gotrue > gotrue.tar
+    echo "Saving image: realtime"
     docker save supabase/realtime > realtime.tar
+    echo "Saving image: api"
     docker save supabase/storage-api > storage-api.tar
+    echo "Saving image: meta"
     docker save supabase/postgres-meta > postgres-meta.tar
+    echo "Saving image: postgrest"
     docker save postgrest/postgrest > postgrest.tar
+    echo "Saving image: logflare"
     docker save supabase/logflare > logflare.tar
+    echo "Saving image: vector"
     docker save timberio/vector > vector.tar
+    echo "Saving image: kong"
     docker save kong > kong.tar
+    echo "Saving image: imgproxy"
     docker save darthsim/imgproxy > imgproxy.tar
-    # docker save studio > studio.tar
     
-    echo "Saving televolution images..."
+    # Monitor
+    echo "Saving image: monitor"
     docker save televolution_monitor > televolution_monitor.tar
 
-    echo "Saving televolution middleware..."
+    # Middleware
+    echo "Saving image: middleware"
     docker save televolution_middleware > televolution_middleware.tar
 
     echo "Images saved successfully to docker_image_builds directory."
@@ -148,24 +161,37 @@ fi
 if $load_images; then
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
 
-    echo "Loading image supabaase..."
+    # Supabase Images
+    echo "Loading image: studio"
     docker load < studio.tar
+    echo "Loading image: runtime"
     docker load < edge-runtime.tar
+    echo "Loading image: postgres"
     docker load < postgres.tar
+    echo "Loading image: gotrue"
     docker load < gotrue.tar
+    echo "Loading image: realtime"
     docker load < realtime.tar
+    echo "Loading image: api"
     docker load < storage-api.tar
+    echo "Loading image: meta"
     docker load < postgres-meta.tar
+    echo "Loading image: postgrest"
     docker load < postgrest.tar
+    echo "Loading image: logflare"
     docker load < logflare.tar
+    echo "Loading image: vector"
     docker load < vector.tar
+    echo "Loading image: kong"
     docker load < kong.tar
+    echo "Loading image: imgproxy"
     docker load < imgproxy.tar
-    # docker load < studio.tar
     
-    echo "Loading televolution images..."
+    # Monitor
+    echo "Loading image: monitor"
     docker load < televolution_monitor.tar
 
-    echo "Loading televolution middleware..."
+    # Middleware
+    echo "Loading image: middleware"
     docker load < televolution_middleware.tar
 fi
