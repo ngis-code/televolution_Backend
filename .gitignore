@@ -135,4 +135,5 @@ gcloud.json
 # apps/docs/public/*.xml
 
 Televolution_monitor/
-televolution_functions/
+televolution_Middleware/
+docker_image_builds/
