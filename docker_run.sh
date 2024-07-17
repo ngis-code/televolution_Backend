@@ -122,7 +122,18 @@ if $save_images; then
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
     
     echo "Saving supabase image..."
-    docker save supabase > supabase.tar
+    docker save studio > studio.tar
+    docker save supabase/edge-runtime > edge-runtime.tar
+    docker save supabase/postgres > postgres.tar
+    docker save supabase/gotrue > gotrue.tar
+    docker save supabase/realtime > realtime.tar
+    docker save supabase/storage-api > storage-api.tar
+    docker save supabase/postgres-meta > postgres-meta.tar
+    docker save postgrest/postgrest > postgrest.tar
+    docker save supabase/logflare > logflare.tar
+    docker save timberio/vector > vector.tar
+    docker save kong > kong.tar
+    docker save darthsim/imgproxy > imgproxy.tar
     # docker save studio > studio.tar
     
     echo "Saving televolution images..."
@@ -138,7 +149,18 @@ if $load_images; then
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
 
     echo "Loading image supabaase..."
-    docker load < supabase.tar
+    docker load < studio.tar
+    docker load < edge-runtime.tar
+    docker load < postgres.tar
+    docker load < gotrue.tar
+    docker load < realtime.tar
+    docker load < storage-api.tar
+    docker load < postgres-meta.tar
+    docker load < postgrest.tar
+    docker load < logflare.tar
+    docker load < vector.tar
+    docker load < kong.tar
+    docker load < imgproxy.tar
     # docker load < studio.tar
     
     echo "Loading televolution images..."
