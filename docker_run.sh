@@ -15,35 +15,50 @@ deploy_middleware=false
 save_images=false
 load_images=false
 
-read -p "Do you want to do a clean build? (y/n): " clean_build_chioce
-read -p "Do you want to deploy the backend (studio)? (y/n): " deploy_studio_choice
-read -p "Do you want to deploy the monitor? (y/n): " deploy_monitor_choice
-read -p "Do you want to deploy the middleware? (y/n): " deploy_middleware_choice
-read -p "Do you want to save the images? (y/n): " save_images_choice
-read -p "Do you want to load the images? (y/n): " load_images_choice
+if [ $# -eq 0 ]; then
+    read -p "Do you want to do a clean build? (y/n): " clean_build_choice
+    read -p "Do you want to deploy the backend (studio)? (y/n): " deploy_studio_choice
+    read -p "Do you want to deploy the monitor? (y/n): " deploy_monitor_choice
+    read -p "Do you want to deploy the middleware? (y/n): " deploy_middleware_choice
+    read -p "Do you want to save the images? (y/n): " save_images_choice
+    read -p "Do you want to load the images? (y/n): " load_images_choice
 
-if [[ $clean_build_chioce == "y" ]]; then
-    clean_build=true
-fi
+    if [[ $clean_build_choice == "y" ]]; then
+        clean_build=true
+    fi
 
-if [[ $deploy_studio_choice == "y" ]]; then
-    deploy_studio=true
-fi
+    if [[ $deploy_studio_choice == "y" ]]; then
+        deploy_studio=true
+    fi
 
-if [[ $deploy_monitor_choice == "y" ]]; then
-    deploy_monitor=true
-fi
+    if [[ $deploy_monitor_choice == "y" ]]; then
+        deploy_monitor=true
+    fi
 
-if [[ $deploy_middleware_choice == "y" ]]; then
-    deploy_middleware=true
-fi
+    if [[ $deploy_middleware_choice == "y" ]]; then
+        deploy_middleware=true
+    fi
 
-if [[ $save_images_choice == "y" ]]; then
-    save_images=true
-fi
+    if [[ $save_images_choice == "y" ]]; then
+        save_images=true
+    fi
 
-if [[ $load_images_choice == "y" ]]; then
-    load_images=true
+    if [[ $load_images_choice == "y" ]]; then
+        load_images=true
+    fi
+else
+    while [[ "$#" -gt 0 ]]; do
+        case $1 in
+            -c|--clean-build) clean_build=true ;;
+            -t|--deploy-studio) deploy_studio=true ;;
+            -m|--deploy-monitor) deploy_monitor=true ;;
+            -d|--deploy-middleware) deploy_middleware=true ;;
+            -s|--save-images) save_images=true ;;
+            -l|--load-images) load_images=true ;;
+            *) echo "Unknown parameter passed: $1"; exit 1 ;;
+        esac
+        shift
+    done
 fi
 
 docker login || error_exit "Docker login failed."
