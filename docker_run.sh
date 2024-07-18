@@ -46,6 +46,21 @@ extract_tag() {
     fi
 }
 
+print_help() {
+    echo "Usage: $0 [options]"
+    echo "Options:"
+    echo "  -c, --clean-build        Perform a docker clean and removes the docker_image_builds directory"
+    echo "  -t, --deploy-studio      Builds the studio"
+    echo "  -m, --deploy-monitor     Builds the monitor"
+    echo "  -d, --deploy-middleware  Builds the middleware"
+    echo "  -s, --save-images        Save the images to the docker_image_builds directory"
+    echo "  -l, --load-images        Load the images from the docker_image_builds directory"
+    echo "  clean                    Perform a clean build (same as -c)"
+    echo "  build                    Builds studio, monitor, and middleware (same as -t -m -d)"
+    echo "  save                     Save the images (same as -s)"
+    echo "  load                     Load the images (same as -l)"
+    echo "  -h, --help               Display this help message"
+}
 
 clean_build=false
 deploy_studio=false
@@ -88,13 +103,19 @@ if [ $# -eq 0 ]; then
 else
     while [[ "$#" -gt 0 ]]; do
         case $1 in
-            -c|--clean-build) clean_build=true ;;
+            clean|-c|--clean-build) clean_build=true ;;
+            build)
+                deploy_studio=true
+                deploy_monitor=true
+                deploy_middleware=true
+                ;;
             -t|--deploy-studio) deploy_studio=true ;;
             -m|--deploy-monitor) deploy_monitor=true ;;
             -d|--deploy-middleware) deploy_middleware=true ;;
-            -s|--save-images) save_images=true ;;
-            -l|--load-images) load_images=true ;;
+            save|-s|--save-images) save_images=true ;;
+            load|-l|--load-images) load_images=true ;;
             *) echo "Unknown parameter passed: $1"; exit 1 ;;
+            help|-h|--help) print_help; exit 0 ;;
         esac
         shift
     done
