@@ -1,5 +1,26 @@
 #!/bin/bash
 
+# Usage Instructions:
+# 1. If you just want to deploy and already have all the images then run the command below
+#    ```
+#    ./docker_run.sh load
+#    ```
+# 
+# 2. if you want to build images, run
+#    ```
+#    ./docker_run.sh build
+#    ```
+# 
+# 3. If you want to do a clean build, run
+#     ```
+#     ./docker_run.sh clean build
+#     ```
+# 
+# 4. If you want to do a save as well, run
+#    ```
+#    ./docker_run.sh clean build save
+#    ```
+
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
@@ -145,7 +166,7 @@ if $deploy_studio; then
     # Starting containers
     docker compose up -d || error_exit "Docker compose up failed."
     cd ..
-    
+
     showSuccess "Televolution Backend was built successfully."
 fi
 
