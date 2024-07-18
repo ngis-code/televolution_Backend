@@ -49,17 +49,14 @@ extract_tag() {
 print_help() {
     echo "Usage: $0 [options]"
     echo "Options:"
-    echo "  -c, --clean-build        Perform a docker clean and removes the docker_image_builds directory"
-    echo "  -t, --deploy-studio      Builds the studio"
-    echo "  -m, --deploy-monitor     Builds the monitor"
-    echo "  -d, --deploy-middleware  Builds the middleware"
-    echo "  -s, --save-images        Save the images to the docker_image_builds directory"
-    echo "  -l, --load-images        Load the images from the docker_image_builds directory"
-    echo "  clean                    Perform a clean build (same as -c)"
-    echo "  build                    Builds studio, monitor, and middleware (same as -t -m -d)"
-    echo "  save                     Save the images (same as -s)"
-    echo "  load                     Load the images (same as -l)"
-    echo "  -h, --help               Display this help message"
+    echo "  help, -h, --help                Display this help message"
+    echo "  clean, -c, --clean-build        Perform a docker clean and removes the docker_image_builds directory"
+    echo "  save, -s, --save-images         Save the images to the docker_image_builds directory"
+    echo "  load, -l, --load-images         Load the images from the docker_image_builds directory"
+    echo "  build                           Builds studio, monitor, and middleware (same as -t -m -d)"
+    echo "  -t, --deploy-studio             Builds the studio"
+    echo "  -m, --deploy-monitor            Builds the monitor"
+    echo "  -d, --deploy-middleware         Builds the middleware"
 }
 
 clean_build=false
