@@ -114,8 +114,8 @@ else
             -d|--deploy-middleware) deploy_middleware=true ;;
             save|-s|--save-images) save_images=true ;;
             load|-l|--load-images) load_images=true ;;
-            *) echo "Unknown parameter passed: $1"; exit 1 ;;
             help|-h|--help) print_help; exit 0 ;;
+            *) echo "Unknown parameter passed: $1"; exit 1 ;;
         esac
         shift
     done
