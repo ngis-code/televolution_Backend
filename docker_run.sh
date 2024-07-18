@@ -8,6 +8,45 @@ error_exit() {
     exit 1
 }
 
+list_docker_image_tags() {
+    local image_name=$1
+    images=$(docker images "$image_name" --format "{{.Repository}}:{{.Tag}}")
+    if [ -z "$images" ]; then
+        error_exit "No images found with the name '$image_name'."
+    else
+        # echo "$images" | while read image; do
+        # tag=${image#*:}
+        # echo "$tag"
+        echo "$images" | head -n 1 | awk -F ':' '{print $2}'
+        done
+    fi
+}
+
+find_files_with_prefix() {
+    local prefix=$1
+    found_files=$(find . -type f -name "${prefix}*")
+    if [ -z "$found_files" ]; then
+        error_exit "No files found with the prefix '$prefix'."
+    else
+        echo "$found_files"
+    fi
+}
+
+extract_tag() {
+    local filename=$1
+    if [ -z "$filename" ]; then
+        error_exit "No filename provided."
+    fi
+    tag=${filename#*@}
+    tag=${tag%.tar}
+    if [ -z "$tag" ]; then
+        error_exit "No tag found in the filename '$filename'."
+    else
+        echo "$tag"
+    fi
+}
+
+
 clean_build=false
 deploy_studio=false
 deploy_monitor=false
@@ -123,39 +162,40 @@ if $save_images; then
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
     
     # Supabase Images
-    echo "Saving image: studio"
-    docker save studio > studio.tar
-    echo "Saving image: runtime"
-    docker save supabase/edge-runtime > edge-runtime.tar
-    echo "Saving image: postgres"
-    docker save supabase/postgres > postgres.tar
-    echo "Saving image: gotrue"
-    docker save supabase/gotrue > gotrue.tar
-    echo "Saving image: realtime"
-    docker save supabase/realtime > realtime.tar
-    echo "Saving image: api"
-    docker save supabase/storage-api > storage-api.tar
-    echo "Saving image: meta"
-    docker save supabase/postgres-meta > postgres-meta.tar
-    echo "Saving image: postgrest"
-    docker save postgrest/postgrest > postgrest.tar
-    echo "Saving image: logflare"
-    docker save supabase/logflare > logflare.tar
-    echo "Saving image: vector"
-    docker save timberio/vector > vector.tar
-    echo "Saving image: kong"
-    docker save kong > kong.tar
-    echo "Saving image: imgproxy"
-    docker save darthsim/imgproxy > imgproxy.tar
-    
+    # echo "Saving image: studio"
+    # docker save studio > studio.tar
+    # echo "Saving image: runtime"
+    # docker save supabase/edge-runtime > edge-runtime.tar
+    # echo "Saving image: postgres"
+    # docker save supabase/postgres > postgres.tar
+    # echo "Saving image: gotrue"
+    # docker save supabase/gotrue > gotrue.tar
+    # echo "Saving image: realtime"
+    # docker save supabase/realtime > realtime.tar
+    # echo "Saving image: api"
+    # docker save supabase/storage-api > storage-api.tar
+    # echo "Saving image: meta"
+    # docker save supabase/postgres-meta > postgres-meta.tar
+    # echo "Saving image: postgrest"
+    # docker save postgrest/postgrest > postgrest.tar
+    # echo "Saving image: logflare"
+    # docker save supabase/logflare > logflare.tar
+    # echo "Saving image: vector"
+    # docker save timberio/vector > vector.tar
+    # echo "Saving image: kong"
+    # docker save kong > kong.tar
+    # echo "Saving image: imgproxy"
+    # docker save darthsim/imgproxy > imgproxy.tar
+
     # Monitor
     echo "Saving image: monitor"
-    docker save televolution_monitor > televolution_monitor.tar
+    ver=$(list_docker_image_tags "televolution_monitor")
+    docker save televolution_monitor > "televolution_monitor@$ver.tar"
 
     # Middleware
     echo "Saving image: middleware"
-    docker save televolution_middleware > televolution_middleware.tar
-
+    ver=$(list_docker_image_tags "televolution_middleware")
+    docker save televolution_middleware > "televolution_middleware@$ver.tar"
     echo "Images saved successfully to docker_image_builds directory."
     cd ..
 fi
@@ -164,38 +204,40 @@ if $load_images; then
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
 
     # Supabase Images
-    echo "Loading image: studio"
-    docker load < studio.tar
-    echo "Loading image: runtime"
-    docker load < edge-runtime.tar
-    echo "Loading image: postgres"
-    docker load < postgres.tar
-    echo "Loading image: gotrue"
-    docker load < gotrue.tar
-    echo "Loading image: realtime"
-    docker load < realtime.tar
-    echo "Loading image: api"
-    docker load < storage-api.tar
-    echo "Loading image: meta"
-    docker load < postgres-meta.tar
-    echo "Loading image: postgrest"
-    docker load < postgrest.tar
-    echo "Loading image: logflare"
-    docker load < logflare.tar
-    echo "Loading image: vector"
-    docker load < vector.tar
-    echo "Loading image: kong"
-    docker load < kong.tar
-    echo "Loading image: imgproxy"
-    docker load < imgproxy.tar
+    # echo "Loading image: studio"
+    # docker load < studio.tar
+    # echo "Loading image: runtime"
+    # docker load < edge-runtime.tar
+    # echo "Loading image: postgres"
+    # docker load < postgres.tar
+    # echo "Loading image: gotrue"
+    # docker load < gotrue.tar
+    # echo "Loading image: realtime"
+    # docker load < realtime.tar
+    # echo "Loading image: api"
+    # docker load < storage-api.tar
+    # echo "Loading image: meta"
+    # docker load < postgres-meta.tar
+    # echo "Loading image: postgrest"
+    # docker load < postgrest.tar
+    # echo "Loading image: logflare"
+    # docker load < logflare.tar
+    # echo "Loading image: vector"
+    # docker load < vector.tar
+    # echo "Loading image: kong"
+    # docker load < kong.tar
+    # echo "Loading image: imgproxy"
+    # docker load < imgproxy.tar
     
     # Monitor
     echo "Loading image: monitor"
-    docker load < televolution_monitor.tar
+    file_name=$(find_files_with_prefix "televolution_monitor@")
+    docker load < "$file_name"
 
     # Middleware
     echo "Loading image: middleware"
-    docker load < televolution_middleware.tar
+    file_name=$(find_files_with_prefix "televolution_middleware@")
+    docker load < "$file_name"
 
     cd ..
 
@@ -207,12 +249,15 @@ if $load_images; then
     # cd ..
     # echo "Televolution Backend setup completed successfully."
 
+    #! Changes should be made here
     echo "Starting monitor container..."
-    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor
+    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor@:$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
     echo "Televolution Monitor setup completed successfully."
 
+    
+    #! Changes should be made here
     echo "Starting middleware container..."
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware@:$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
     echo "Televolution Middleware setup completed successfully."
 
     cd ..
