@@ -2,6 +2,11 @@
 
 RED='\033[0;31m'
 NC='\033[0m' # No Color
+GREEN='\033[0;32m'
+
+showSuccess() {
+    echo -e "${GREEN}$1${NC}"
+}
 
 # Exit on error
 error_exit() {
@@ -129,6 +134,7 @@ fi
 if $deploy_studio; then
     # Building studio
     docker build . -f apps/studio/Dockerfile --target production -t studio:latest || error_exit "Docker build failed."
+    showSuccess "Studio was built successfully."
 
     cd docker || error_exit "Directory docker does not exist."
     cp .env.example .env || error_exit "Failed to copy .env file."
@@ -138,8 +144,9 @@ if $deploy_studio; then
 
     # Starting containers
     docker compose up -d || error_exit "Docker compose up failed."
-    echo "Televolution Backend setup completed successfully."
     cd ..
+    
+    showSuccess "Televolution Backend was built successfully."
 fi
 
 if $deploy_monitor; then
@@ -155,7 +162,10 @@ if $deploy_monitor; then
     echo "Building version: $latestMonitorReleasedVersion"
     docker build -t televolution_monitor:$latestMonitorReleasedVersion . || error_exit "Docker build failed."
     docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$latestMonitorReleasedVersion
-    echo "Televolution Monitor setup completed successfully."
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the monitor container."
+    fi
+    showSuccess "Televolution Monitor was built successfully."
     cd ..
 fi
 
@@ -169,10 +179,16 @@ if $deploy_middleware; then
     cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
     git pull || error_exit "Git pull failed."
     latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+    if [ -z "$latestMiddlewareReleasedVersion" ]; then
+        error_exit "Failed to get the latest middleware version."
+    fi
     echo "Building version: $latestMiddlewareReleasedVersion"
     docker build -t televolution_middleware:$latestMiddlewareReleasedVersion . || error_exit "Docker build failed."
     docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
-    echo "Televolution Middleware setup completed successfully."
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the middleware container."
+    fi
+    showSuccess "Televolution Middleware was built successfully."
     cd ..
 fi
 
@@ -188,62 +204,63 @@ if $save_images; then
     # Supabase Images
     tag=$(list_docker_image_tags "studio")
     echo "Saving image: studio:$tag"
-    docker save studio > "studio@$tag.tar"
+    docker save studio > "studio@$tag.tar" || error_exit "Failed to save image studio."
 
     tag=$(list_docker_image_tags "supabase/edge-runtime")
     echo "Saving image: runtime:$tag"
-    docker save supabase/edge-runtime > "edge-runtime@$tag.tar"
+    docker save supabase/edge-runtime > "edge-runtime@$tag.tar" || error_exit "Failed to save image edge-runtime."
 
     tag=$(list_docker_image_tags "supabase/postgres")
     echo "Saving image: postgres:$tag"
-    docker save supabase/postgres > "postgres@$tag.tar"
+    docker save supabase/postgres > "postgres@$tag.tar" || error_exit "Failed to save image postgres."
 
     tag=$(list_docker_image_tags "supabase/gotrue")
     echo "Saving image: gotrue:$tag"
-    docker save supabase/gotrue > "gotrue@$tag.tar"
+    docker save supabase/gotrue > "gotrue@$tag.tar" || error_exit "Failed to save image gotrue."
     
     tag=$(list_docker_image_tags "supabase/realtime")
     echo "Saving image: realtime:$tag"
-    docker save supabase/realtime > "realtime@$tag.tar"
+    docker save supabase/realtime > "realtime@$tag.tar" || error_exit "Failed to save image realtime."
     
     tag=$(list_docker_image_tags "supabase/storage-api")
     echo "Saving image: api:$tag"
-    docker save supabase/storage-api > "storage-api@$tag.tar"
+    docker save supabase/storage-api > "storage-api@$tag.tar"   || error_exit "Failed to save image storage-api."
     
     tag=$(list_docker_image_tags "supabase/postgres-meta")
     echo "Saving image: meta:$tag"
-    docker save supabase/postgres-meta > "postgres-meta@$tag.tar"
+    docker save supabase/postgres-meta > "postgres-meta@$tag.tar" || error_exit "Failed to save image postgres-meta."
     
     tag=$(list_docker_image_tags "postgrest/postgrest")
     echo "Saving image: postgrest:$tag"
-    docker save postgrest/postgrest > "postgrest@$tag.tar"
+    docker save postgrest/postgrest > "postgrest@$tag.tar" || error_exit "Failed to save image postgrest."
     
     tag=$(list_docker_image_tags "supabase/logflare")
     echo "Saving image: logflare:$tag"
-    docker save supabase/logflare > "logflare@$tag.tar"
+    docker save supabase/logflare > "logflare@$tag.tar" || error_exit "Failed to save image logflare."
     
     tag=$(list_docker_image_tags "timberio/vector")
     echo "Saving image: vector:$tag"
-    docker save timberio/vector > "vector@$tag.tar"
+    docker save timberio/vector > "vector@$tag.tar" || error_exit "Failed to save image vector."
     
     tag=$(list_docker_image_tags "kong")
     echo "Saving image: kong:$tag"
-    docker save kong > "kong@$tag.tar"
+    docker save kong > "kong@$tag.tar" || error_exit "Failed to save image kong."
     
     tag=$(list_docker_image_tags "darthsim/imgproxy")
     echo "Saving image: imgproxy:$tag"
-    docker save darthsim/imgproxy > "imgproxy@$tag.tar"
+    docker save darthsim/imgproxy > "imgproxy@$tag.tar" || error_exit "Failed to save image imgproxy."
 
     # Monitor
     echo "Saving image: monitor"
     tag=$(list_docker_image_tags "televolution_monitor")
-    docker save televolution_monitor > "televolution_monitor@$tag.tar"
+    docker save televolution_monitor > "televolution_monitor@$tag.tar" || error_exit "Failed to save image televolution_monitor."
 
     # Middleware
     echo "Saving image: middleware"
     tag=$(list_docker_image_tags "televolution_middleware")
-    docker save televolution_middleware > "televolution_middleware@$tag.tar"
-    echo "Images saved successfully to docker_image_builds directory."
+    docker save televolution_middleware > "televolution_middleware@$tag.tar" || error_exit "Failed to save image televolution_middleware."
+    
+    showSuccess "Images saved successfully to docker_image_builds directory."
     cd ..
 fi
 
@@ -253,84 +270,89 @@ if $load_images; then
     # Supabase Images
     file_name=$(find_files_with_prefix "studio@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image studio."
     
     file_name=$(find_files_with_prefix "edge-runtime@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image edge-runtime."
     
     file_name=$(find_files_with_prefix "postgres@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image postgres."
     
     file_name=$(find_files_with_prefix "gotrue@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image gotrue."
     
     file_name=$(find_files_with_prefix "realtime@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image realtime."
     
     file_name=$(find_files_with_prefix "storage-api@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image storage-api."
     
     file_name=$(find_files_with_prefix "postgres-meta@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image postgres-meta."
     
     file_name=$(find_files_with_prefix "postgrest@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image postgrest."
     
     file_name=$(find_files_with_prefix "logflare@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image logflare."
     
     file_name=$(find_files_with_prefix "vector@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image vector."
     
     file_name=$(find_files_with_prefix "kong@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image kong."
     
     file_name=$(find_files_with_prefix "imgproxy@")
     echo "Loading image: $file_name"
-    docker load < "$file_name"
+    docker load < "$file_name" || error_exit "Failed to load image imgproxy."
     
     # Monitor
     echo "Loading image: monitor"
     televolution_monitor_file_name=$(find_files_with_prefix "televolution_monitor@")
-    docker load < "$televolution_monitor_file_name"
+    docker load < "$televolution_monitor_file_name" || error_exit "Failed to load image televolution_monitor."
 
     # Middleware
     echo "Loading image: middleware"
     televolution_middleware_file_name=$(find_files_with_prefix "televolution_middleware@")
-    docker load < "$televolution_middleware_file_name"
+    docker load < "$televolution_middleware_file_name" || error_exit "Failed to load image televolution_middleware."
 
     # Starting Monitor
     echo "Starting monitor container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
     echo "Tag: $tag"
     docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$tag
-    echo "Televolution Monitor setup completed successfully."
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the monitor container."
+    fi
 
     # Starting Middleware
     echo "Starting middleware container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
     echo "Tag: $tag"
     docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$tag
-    echo "Televolution Middleware setup completed successfully."
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the middleware container."
+    fi
 
     cd ..
 
     # Running Supabase Container
-    echo "Starting supabase container..."
+    echo "Starting Studio and Backend Service containers..."
     cd docker || error_exit "Directory docker does not exist."
     cp .env.example .env || error_exit "Failed to copy .env file."
     docker compose up -d || error_exit "Docker compose up failed."
-    echo "Televolution Supabase setup completed."
     cd ..
+
+    showSuccess "All Images loaded successfully from docker_image_builds directory."
 
 fi
