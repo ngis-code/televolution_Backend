@@ -3,25 +3,24 @@
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
+# Exit on error
 error_exit() {
     echo -e "${RED}$1${NC}" 1>&2
     exit 1
 }
 
+# List all tags of a docker image
 list_docker_image_tags() {
     local image_name=$1
     images=$(docker images "$image_name" --format "{{.Repository}}:{{.Tag}}")
     if [ -z "$images" ]; then
         error_exit "No images found with the name '$image_name'."
     else
-        # echo "$images" | while read image; do
-        # tag=${image#*:}
-        # echo "$tag"
         echo "$images" | head -n 1 | awk -F ':' '{print $2}'
-        # done
     fi
 }
 
+# Find a file with a given prefix
 find_files_with_prefix() {
     local prefix=$1
     found_files=$(find . -type f -name "${prefix}*")
@@ -32,6 +31,7 @@ find_files_with_prefix() {
     fi
 }
 
+# Extract tag from a filename
 extract_tag() {
     local filename=$1
     if [ -z "$filename" ]; then
@@ -189,13 +189,13 @@ if $save_images; then
 
     # Monitor
     echo "Saving image: monitor"
-    ver=$(list_docker_image_tags "televolution_monitor")
-    docker save televolution_monitor > "televolution_monitor@$ver.tar"
+    tag=$(list_docker_image_tags "televolution_monitor")
+    docker save televolution_monitor > "televolution_monitor@$tag.tar"
 
     # Middleware
     echo "Saving image: middleware"
-    ver=$(list_docker_image_tags "televolution_middleware")
-    docker save televolution_middleware > "televolution_middleware@$ver.tar"
+    tag=$(list_docker_image_tags "televolution_middleware")
+    docker save televolution_middleware > "televolution_middleware@$tag.tar"
     echo "Images saved successfully to docker_image_builds directory."
     cd ..
 fi
@@ -231,13 +231,13 @@ if $load_images; then
     
     # Monitor
     echo "Loading image: monitor"
-    file_name=$(find_files_with_prefix "televolution_monitor@")
-    docker load < "$file_name"
+    televolution_monitor_file_name=$(find_files_with_prefix "televolution_monitor@")
+    docker load < "$televolution_monitor_file_name"
 
     # Middleware
     echo "Loading image: middleware"
-    file_name=$(find_files_with_prefix "televolution_middleware@")
-    docker load < "$file_name"
+    televolution_middleware_file_name=$(find_files_with_prefix "televolution_middleware@")
+    docker load < "$televolution_middleware_file_name"
 
     # cd ..
 
@@ -250,16 +250,16 @@ if $load_images; then
     # echo "Televolution Backend setup completed successfully."
 
     echo "Starting monitor container..."
-    ver=$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
-    echo "Tag: $ver"
-    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:"$ver"
+    tag=$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
+    echo "Tag: $tag"
+    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$tag
     echo "Televolution Monitor setup completed successfully."
 
     
     echo "Starting middleware container..."
-    ver=$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
-    echo "Tag: $ver"
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:"$ver"
+    tag=$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
+    echo "Tag: $tag"
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$tag
     echo "Televolution Middleware setup completed successfully."
 
     cd ..
