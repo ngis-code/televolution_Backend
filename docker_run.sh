@@ -237,7 +237,7 @@ if $load_images; then
     echo "Loading image: $file_name"
     docker load < "$file_name"
     
-    file_name=$(find_files_with_prefix "runtime@")
+    file_name=$(find_files_with_prefix "edge-runtime@")
     echo "Loading image: $file_name"
     docker load < "$file_name"
     
@@ -253,11 +253,11 @@ if $load_images; then
     echo "Loading image: $file_name"
     docker load < "$file_name"
     
-    file_name=$(find_files_with_prefix "api@")
+    file_name=$(find_files_with_prefix "storage-api@")
     echo "Loading image: $file_name"
     docker load < "$file_name"
     
-    file_name=$(find_files_with_prefix "meta@")
+    file_name=$(find_files_with_prefix "postgres-meta@")
     echo "Loading image: $file_name"
     docker load < "$file_name"
     
