@@ -18,7 +18,7 @@ list_docker_image_tags() {
         # tag=${image#*:}
         # echo "$tag"
         echo "$images" | head -n 1 | awk -F ':' '{print $2}'
-        done
+        # done
     fi
 }
 
@@ -239,7 +239,7 @@ if $load_images; then
     file_name=$(find_files_with_prefix "televolution_middleware@")
     docker load < "$file_name"
 
-    cd ..
+    # cd ..
 
     # Running Containers
     # echo "Starting supabase container..."
@@ -249,15 +249,17 @@ if $load_images; then
     # cd ..
     # echo "Televolution Backend setup completed successfully."
 
-    #! Changes should be made here
     echo "Starting monitor container..."
-    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor@:$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
+    ver=$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
+    echo "Tag: $ver"
+    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:"$ver"
     echo "Televolution Monitor setup completed successfully."
 
     
-    #! Changes should be made here
     echo "Starting middleware container..."
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware@:$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
+    ver=$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
+    echo "Tag: $ver"
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:"$ver"
     echo "Televolution Middleware setup completed successfully."
 
     cd ..
