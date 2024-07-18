@@ -87,7 +87,7 @@ if $deploy_monitor; then
 
     cd Televolution_monitor || error_exit "Directory Televolution_monitor does not exist."
     git pull || error_exit "Git pull failed."
-    latestMonitorReleasedVersion=$(git describe --tags git rev-list --tags --max-count=1)
+    latestMonitorReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
     echo "Building version: $latestMonitorReleasedVersion"
     docker build -t televolution_monitor:$latestMonitorReleasedVersion . || error_exit "Docker build failed."
     docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$latestMonitorReleasedVersion
@@ -104,7 +104,7 @@ if $deploy_middleware; then
 
     cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
     git pull || error_exit "Git pull failed."
-    latestMiddlewareReleasedVersion=$(git describe --tags git rev-list --tags --max-count=1)
+    latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
     echo "Building version: $latestMiddlewareReleasedVersion"
     docker build -t televolution_middleware:$latestMiddlewareReleasedVersion . || error_exit "Docker build failed."
     docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
