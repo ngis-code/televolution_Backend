@@ -308,11 +308,11 @@ if $load_images; then
     cd ..
 
     # Running Supabase Container
-    # echo "Starting supabase container..."
-    # cd docker || error_exit "Directory docker does not exist."
-    # cp .env.example .env || error_exit "Failed to copy .env file."
-    # docker compose up -d || error_exit "Docker compose up failed."
-    # echo "Televolution Supabase setup completed."
-    # cd ..
+    echo "Starting supabase container..."
+    cd docker || error_exit "Directory docker does not exist."
+    cp .env.example .env || error_exit "Failed to copy .env file."
+    docker compose up -d || error_exit "Docker compose up failed."
+    echo "Televolution Supabase setup completed."
+    cd ..
 
 fi
