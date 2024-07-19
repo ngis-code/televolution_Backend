@@ -149,6 +149,8 @@ docker login || error_exit "Docker login failed."
 if $clean_build; then
     docker builder prune || error_exit "Docker builder prune failed."
     rm -rf docker_image_builds || error_exit "Failed to remove directory docker_image_builds."
+    docker stop $(docker ps -q)
+    docker rm $(docker ps -a -q)
     docker pull node:20-slim || error_exit "Docker pull failed."
 fi
 
