@@ -362,7 +362,7 @@ if $load_images; then
     echo "Starting middleware container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
     echo "Tag: $tag"
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$tag
+    docker run -d --restart=always -p 3000:3000 --env-file .env --name televolution_middleware televolution_middleware:$tag
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the middleware container."
     fi
