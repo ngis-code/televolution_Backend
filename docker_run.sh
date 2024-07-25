@@ -145,6 +145,7 @@ else
 fi
 
 docker login || error_exit "Docker login failed."
+git pull || echo "Git pull failed. Continuing..."
 
 if $clean_build; then
     docker builder prune || error_exit "Docker builder prune failed."
