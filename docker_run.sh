@@ -27,11 +27,13 @@ GREEN='\033[0;32m'
 
 showSuccess() {
     echo -e "${GREEN}$1${NC}"
+    osascript -e 'beep 1'
 }
 
 # Exit on error
 error_exit() {
     echo -e "${RED}$1${NC}" 1>&2
+    osascript -e 'beep 2'
     exit 1
 }
 
