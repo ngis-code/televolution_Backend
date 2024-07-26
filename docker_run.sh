@@ -454,8 +454,14 @@ if $download_release; then
         error_exit "No releases found in the repository."
     fi
 
-    echo "Downloading assets from release $latest_tag..."
-    gh release download "$latest_tag" --repo "$GITHUB_REPO"
+    read -p "Enter the tag to download (press enter for $latest_tag): " download_tag
+    
+    if [ -z "$download_tag" ]; then
+        download_tag=$latest_tag
+    fi
+
+    echo "Downloading assets from release $download_tag..."
+    gh release download "$download_tag" --repo "$GITHUB_REPO"
 
     cd ..
     showSuccess "All assets downloaded successfully into docker_image_builds directory."
