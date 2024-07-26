@@ -83,6 +83,8 @@ print_help() {
     echo "  -t, --deploy-studio             Builds the studio"
     echo "  -m, --deploy-monitor            Builds the monitor"
     echo "  -d, --deploy-middleware         Builds the middleware"
+    echo "  -r, --create-release            Creates a new release on Github"
+    echo "  -w, --download                  Downloads the latest release from Github"
 }
 
 clean_build=false
@@ -91,6 +93,8 @@ deploy_monitor=false
 deploy_middleware=false
 save_images=false
 load_images=false
+create_release=false
+download_release=false
 
 if [ $# -eq 0 ]; then
     read -p "Do you want to do a clean build? (y/n): " clean_build_choice
@@ -137,6 +141,8 @@ else
             -d|--deploy-middleware) deploy_middleware=true ;;
             save|-s|--save-images) save_images=true ;;
             load|-l|--load-images) load_images=true ;;
+            release|-r|--create-release) create_release=true ;;
+            download|-w|--download) download_release=true ;;
             help|-h|--help) print_help; exit 0 ;;
             *) echo "Unknown parameter passed: $1"; exit 1 ;;
         esac
@@ -379,4 +385,62 @@ if $load_images; then
 
     showSuccess "All Images loaded successfully from docker_image_builds directory."
 
+fi
+
+GITHUB_REPO="https://github.com/ngis-code/televolution_Backend"
+
+check_gh_installation(){
+    if ! command -v gh &> /dev/null; then
+        error_exit "Github CLI is not installed. Please install it from https://github.com/cli/cli#installation."
+    fi
+}
+
+if $create_release; then
+    check_gh_installation
+
+    cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
+
+    latest_tag=$(gh release list --repo "$GITHUB_REPO" --limit 1 --json tagName -q ".[0].tagName")
+
+    read -p "Enter the tag for the new release (latest: $latest_tag): " new_tag
+    read -p "Enter the name for the new release: " release_name
+    read -p "Enter the body text for the release: " release_body
+
+    if [ "$(printf '%s\n' "$latest_tag" "$new_tag" | sort -V | head -n1)" != "$new_tag" ]; then
+        error_exit "The provided tag ($new_tag) is not greater than the latest tag ($latest_tag)."
+    fi
+
+    gh release create "$new_tag" --title "$release_name" --notes "$release_body" --repo "$GITHUB_REPO" || error_exit "Failed to create release."
+
+    for file in *.tar; do
+        echo "Uploading $file..."
+        gh release upload "$new_tag" "$file" --repo "$GITHUB_REPO"
+    done
+
+    cd ..
+    showSuccess "Release created and images uploaded successfully."
+fi
+
+if $download_release; then
+    check_gh_installation
+
+    if [ -d "docker_image_builds" ]; then
+        echo "Deleting existing directory docker_image_builds..."
+        rm -rf docker_image_builds || error_exit "Failed to delete directory docker_image_builds."
+    fi
+
+    mkdir docker_image_builds || error_exit "Failed to create directory docker_image_builds."
+    cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
+
+    latest_tag=$(gh release list --repo "$GITHUB_REPO" --limit 1 --json tagName -q ".[0].tagName")
+
+    if [ -z "$latest_tag" ]; then
+        error_exit "No releases found in the repository."
+    fi
+
+    echo "Downloading assets from release $latest_tag..."
+    gh release download "$latest_tag" --repo "$GITHUB_REPO"
+
+    cd ..
+    showSuccess "All assets downloaded successfully into docker_image_builds directory."
 fi
