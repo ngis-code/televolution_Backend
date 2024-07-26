@@ -403,12 +403,28 @@ if $create_release; then
     latest_tag=$(gh release list --repo "$GITHUB_REPO" --limit 1 --json tagName -q ".[0].tagName")
 
     read -p "Enter the tag for the new release (latest: $latest_tag): " new_tag
-    read -p "Enter the name for the new release: " release_name
-    read -p "Enter the body text for the release: " release_body
-
-    if [ "$(printf '%s\n' "$latest_tag" "$new_tag" | sort -V | head -n1)" != "$new_tag" ]; then
-        error_exit "The provided tag ($new_tag) is not greater than the latest tag ($latest_tag)."
+    
+    if [ -z "$new_tag" ]; then
+        error_exit "The new tag cannot be empty."
     fi
+
+    if [[ "$new_tag" != v* ]]; then
+        new_tag="v$new_tag"
+    fi
+
+    if [[ "$latest_tag" > "$new_tag" ]]; then
+        error_exit "The new tag must be greater or equal to the latest tag ($latest_tag)."
+    fi
+
+    new_tag=${new_tag#v}
+
+    read -p "Enter the name for the new release: " release_name
+    
+    if [ -z "$release_name" ]; then
+        error_exit "The release name cannot be empty."
+    fi
+
+    read -p "Enter the body text for the release: " release_body
 
     gh release create "$new_tag" --title "$release_name" --notes "$release_body" --repo "$GITHUB_REPO" || error_exit "Failed to create release."
 
