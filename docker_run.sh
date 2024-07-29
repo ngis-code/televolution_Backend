@@ -324,6 +324,11 @@ if $save_images; then
     echo "Saving image: middleware"
     tag=$(list_docker_image_tags "televolution_middleware")
     docker save televolution_middleware > "televolution_middleware@$tag.tar" || error_exit "Failed to save image televolution_middleware."
+
+    # Frontend
+    echo "Saving image: frontend"
+    tag=$(list_docker_image_tags "televolution_frontend")
+    docker save televolution_frontend > "televolution_frontend@$tag.tar" || error_exit "Failed to save image televolution_frontend."
     
     showSuccess "Images saved successfully to docker_image_builds directory."
     cd ..
@@ -391,6 +396,11 @@ if $load_images; then
     televolution_middleware_file_name=$(find_files_with_prefix "televolution_middleware@")
     docker load < "$televolution_middleware_file_name" || error_exit "Failed to load image televolution_middleware."
 
+    # Frontend
+    echo "Loading image: frontend"
+    televolution_frontend_file_name=$(find_files_with_prefix "televolution_frontend@")
+    docker load < "$televolution_frontend_file_name" || error_exit "Failed to load image televolution_frontend."
+
     # Starting Monitor
     echo "Starting monitor container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
@@ -416,6 +426,17 @@ if $load_images; then
     cd docker || error_exit "Directory docker does not exist."
     cp .env.example .env || error_exit "Failed to copy .env file."
     docker compose up -d || error_exit "Docker compose up failed."
+    cd ..
+
+    # Running Frontend Container
+    echo "Starting Frontend container..."
+    cd televolution_frontend || error_exit "Directory televolution_frontend does not exist."
+    tag=$(extract_tag "$(find_files_with_prefix "televolution_frontend@")")
+    echo "Tag: $tag"
+    docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:$tag
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the frontend container."
+    fi
     cd ..
 
     showSuccess "All Images loaded successfully from docker_image_builds directory."
