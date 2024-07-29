@@ -244,10 +244,18 @@ if $deploy_frontend; then
 
     flutter pub get || error_exit "Flutter pub get failed."
     flutter build web || error_exit "Flutter build failed."
-    
-    docker build -t televolution_frontend:latest . || error_exit "Docker build failed."
 
-    docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:latest
+    latestFrontendReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+    if [ -z "$latestFrontendReleasedVersion" ]; then
+        error_exit "Failed to get the latest frontend version."
+    fi
+    echo "Building version: $latestFrontendReleasedVersion"
+
+    # docker build -t televolution_frontend:latest . || error_exit "Docker build failed."
+    docker build -t televolution_frontend:$latestFrontendReleasedVersion . || error_exit "Docker build failed."
+
+    # docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:latest
+    docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:$latestFrontendReleasedVersion
 
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the frontend container."
