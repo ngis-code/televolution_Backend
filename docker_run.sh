@@ -245,6 +245,13 @@ if $deploy_frontend; then
     docker build -t televolution_frontend:latest . || error_exit "Docker build failed."
 
     docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:latest
+
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the frontend container."
+    fi
+
+    showSuccess "Televolution Frontend was built successfully."
+    cd ..
 fi
 
 if $save_images; then
