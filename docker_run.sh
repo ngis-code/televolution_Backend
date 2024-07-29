@@ -85,14 +85,16 @@ print_help() {
     echo "  -t, --deploy-studio             Builds the studio"
     echo "  -m, --deploy-monitor            Builds the monitor"
     echo "  -d, --deploy-middleware         Builds the middleware"
-    echo "  -r, --create-release            Creates a new release on Github"
-    echo "  -w, --download                  Downloads the latest release from Github"
+    echo "  -f, --deploy-frontend           Builds the frontend"
+    echo "  release, -r, --create-release   Creates a new release on Github"
+    echo "  download, -w, --download        Downloads the latest release from Github"
 }
 
 clean_build=false
 deploy_studio=false
 deploy_monitor=false
 deploy_middleware=false
+deploy_frontend=false
 save_images=false
 load_images=false
 create_release=false
@@ -103,6 +105,7 @@ if [ $# -eq 0 ]; then
     read -p "Do you want to deploy the backend (studio)? (y/n): " deploy_studio_choice
     read -p "Do you want to deploy the monitor? (y/n): " deploy_monitor_choice
     read -p "Do you want to deploy the middleware? (y/n): " deploy_middleware_choice
+    read -p "Do you want to deploy the frontend? (y/n): " deploy_frontend_choice
     read -p "Do you want to save the images? (y/n): " save_images_choice
     read -p "Do you want to load the images? (y/n): " load_images_choice
 
@@ -129,6 +132,10 @@ if [ $# -eq 0 ]; then
     if [[ $load_images_choice == "y" ]]; then
         load_images=true
     fi
+
+    if [[ $deploy_frontend_choice == "y" ]]; then
+        deploy_frontend=true
+    fi
 else
     while [[ "$#" -gt 0 ]]; do
         case $1 in
@@ -141,6 +148,7 @@ else
             -t|--deploy-studio) deploy_studio=true ;;
             -m|--deploy-monitor) deploy_monitor=true ;;
             -d|--deploy-middleware) deploy_middleware=true ;;
+            -f|--deploy-frontend) deploy_frontend=true ;;
             save|-s|--save-images) save_images=true ;;
             load|-l|--load-images) load_images=true ;;
             release|-r|--create-release) create_release=true ;;
@@ -222,6 +230,21 @@ if $deploy_middleware; then
     fi
     showSuccess "Televolution Middleware was built successfully."
     cd ..
+fi
+
+if $deploy_frontend; then
+    if [ -d "televolution_frontend" ]; then
+        echo "Directory televolution_frontend already exists."
+    else
+        git clone https://github.com/ngis-code/televolution_Frontend_lite televolution_frontend || error_exit "Git clone failed."
+    fi
+
+    cd televolution_frontend || error_exit "Directory televolution_frontend does not exist."
+    git pull || error_exit "Git pull failed."
+    
+    docker build -t televolution_frontend:latest . || error_exit "Docker build failed."
+
+    docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:latest
 fi
 
 if $save_images; then
