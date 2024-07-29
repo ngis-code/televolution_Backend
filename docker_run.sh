@@ -241,6 +241,9 @@ if $deploy_frontend; then
 
     cd televolution_frontend || error_exit "Directory televolution_frontend does not exist."
     git pull || error_exit "Git pull failed."
+
+    flutter pub get || error_exit "Flutter pub get failed."
+    flutter build web || error_exit "Flutter build failed."
     
     docker build -t televolution_frontend:latest . || error_exit "Docker build failed."
 
