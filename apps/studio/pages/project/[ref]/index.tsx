@@ -1,8 +1,6 @@
 import { useEffect, useRef } from 'react'
 
 import { useParams } from 'common'
-import Connect from 'components/interfaces/Home/Connect/Connect'
-import ServiceStatus from 'components/interfaces/Home/ServiceStatus'
 import { ProjectLayoutWithAuth } from 'components/layouts/ProjectLayout/ProjectLayout'
 import { useSelectedProject } from 'hooks'
 import { useAppStateSnapshot } from 'state/app-state'

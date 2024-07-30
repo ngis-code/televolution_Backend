@@ -129,7 +129,6 @@ export const generateOtherRoutes = (ref?: string, project?: Project): Route[] =>
       icon: <List size={ICON_SIZE} strokeWidth={ICON_STROKE_WIDTH} />,
       link: ref && (isProjectBuilding ? buildingUrl : `/project/${ref}/logs/explorer`),
     },
-   
   ]
 }
 
