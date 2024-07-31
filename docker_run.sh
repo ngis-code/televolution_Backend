@@ -9,7 +9,6 @@ showSuccess() {
     # osascript -e 'beep 1'
 }
 
-# Exit on error
 error_exit() {
     echo -e "${RED}$1${NC}" 1>&2
     # osascript -e 'beep 2'
