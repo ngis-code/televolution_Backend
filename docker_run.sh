@@ -164,7 +164,7 @@ if $deploy_studio; then
     cp .env.example .env || error_exit "Failed to copy .env file."
 
     # Pulling images
-    docker compose -f docker-compose2.yml pull || error_exit "Docker compose pull failed."
+    docker compose -f docker-compose2.yml pull --platform=linux/amd64 || error_exit "Docker compose pull failed."
 
     # Starting containers
     docker compose up -d || error_exit "Docker compose up failed."
