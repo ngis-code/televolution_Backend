@@ -485,7 +485,7 @@ if $create_release; then
 fi
 
 if $download_release; then
-    check_gh_installation
+    read -p "Do you want to download the latest release without using Github CLI? (y/n): " download_without_cli
 
     if [ -d "docker_image_builds" ]; then
         echo "Deleting existing directory docker_image_builds..."
@@ -495,21 +495,76 @@ if $download_release; then
     mkdir docker_image_builds || error_exit "Failed to create directory docker_image_builds."
     cd docker_image_builds || error_exit "Directory docker_image_builds does not exist."
 
-    latest_tag=$(gh release list --repo "$GITHUB_REPO" --limit 1 --json tagName -q ".[0].tagName")
+    if [[ $download_without_cli == "y" ]]; then
+        echo "Downloading the latest release from Github using curl..."
 
-    if [ -z "$latest_tag" ]; then
-        error_exit "No releases found in the repository."
+        read -p "Enter the tag to download (press enter for latest): " download_tag
+
+        if [ -z "$download_tag" ]; then
+            download_tag="latest"
+        fi
+
+        echo "Downloading file edge-runtime@v1.55.0.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/edge-runtime@v1.55.0.tar || error_continue "Failed to download edge-runtime"
+
+        echo "Downloading file gotrue@v2.151.0.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/gotrue@v2.151.0.tar || error_continue "Failed to download gotrue."
+
+        echo "Downloading file imgproxy@v3.8.0.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/imgproxy@v3.8.0.tar || error_continue "Failed to download imgproxy."
+
+        echo "Downloading file kong@2.8.1.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/kong@2.8.1.tar || error_continue "Failed to download kong."
+
+        echo "Downloading file logflare@1.4.0.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/logflare@1.4.0.tar || error_continue "Failed to download logflare."
+
+        echo "Downloading file postgres-meta@v0.83.2.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/postgres-meta@v0.83.2.tar || error_continue "Failed to download postgres."
+
+        echo "Downloading file postgres@15.1.1.78.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/postgres@15.1.1.78.tar || error_continue "Failed to download postgres."
+
+        echo "Downloading file postgrest@v12.2.0.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/postgrest@v12.2.0.tar || error_continue "Failed to download postgrest."
+
+        echo "Downloading file realtime@v2.29.15.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/realtime@v2.29.15.tar || error_continue "Failed to download realtime."
+
+        echo "Downloading file storage-api@v1.0.6.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/storage-api@v1.0.6.tar || error_continue "Failed to download storage."
+
+        echo "Downloading file studio@latest.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/studio@latest.tar || error_continue "Failed to download studio."
+
+        echo "Downloading file televolution_frontend@v0.0.1.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/televolution_frontend@v0.0.1.tar || error_continue "Failed to download televolution_frontend."
+
+        echo "Downloading file televolution_middleware@v0.0.1.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/televolution_middleware@v0.0.1.tar || error_continue "Failed to download televolution_middleware."
+
+        echo "Downloading file vector@0.28.1-alpine.tar"
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/$download_tag/vector@0.28.1-alpine.tar || error_continue "Failed to download vector."
+    else
+        check_gh_installation
+
+        latest_tag=$(gh release list --repo "$GITHUB_REPO" --limit 1 --json tagName -q ".[0].tagName")
+
+        if [ -z "$latest_tag" ]; then
+            error_exit "No releases found in the repository."
+        fi
+
+        read -p "Enter the tag to download (press enter for $latest_tag): " download_tag
+        
+        if [ -z "$download_tag" ]; then
+            download_tag=$latest_tag
+        fi
+
+        echo "Downloading assets from release $download_tag..."
+        gh release download "$download_tag" --repo "$GITHUB_REPO"
     fi
-
-    read -p "Enter the tag to download (press enter for $latest_tag): " download_tag
-    
-    if [ -z "$download_tag" ]; then
-        download_tag=$latest_tag
-    fi
-
-    echo "Downloading assets from release $download_tag..."
-    gh release download "$download_tag" --repo "$GITHUB_REPO"
 
     cd ..
+
     showSuccess "All assets downloaded successfully into docker_image_builds directory."
 fi
