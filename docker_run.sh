@@ -1,40 +1,24 @@
 #!/bin/bash
 
-# Usage Instructions:
-# 1. If you just want to deploy and already have all the images then run the command below
-#    ```
-#    ./docker_run.sh load
-#    ```
-# 
-# 2. if you want to build images, run
-#    ```
-#    ./docker_run.sh build
-#    ```
-# 
-# 3. If you want to do a clean build, run
-#     ```
-#     ./docker_run.sh clean build
-#     ```
-# 
-# 4. If you want to do a save as well, run
-#    ```
-#    ./docker_run.sh clean build save
-#    ```
-
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
 
 showSuccess() {
     echo -e "${GREEN}$1${NC}"
-    osascript -e 'beep 1'
+    # osascript -e 'beep 1'
 }
 
 # Exit on error
 error_exit() {
     echo -e "${RED}$1${NC}" 1>&2
-    osascript -e 'beep 2'
+    # osascript -e 'beep 2'
     exit 1
+}
+
+error_continue() {
+    echo -e "${RED}$1${NC}" 1>&2
+    # osascript -e 'beep 2'
 }
 
 # List all tags of a docker image
@@ -160,15 +144,16 @@ else
     done
 fi
 
-docker login || error_exit "Docker login failed."
-git pull || echo "Git pull failed. Continuing..."
+# Initializations
+# docker login || echo "Docker login failed."
+# git pull || echo "Git pull failed. Continuing..."
+docker pull node:20-slim || error_exit "Docker pull failed."
 
 if $clean_build; then
     docker builder prune || error_exit "Docker builder prune failed."
     rm -rf docker_image_builds || error_exit "Failed to remove directory docker_image_builds."
     docker stop $(docker ps -q)
     docker rm $(docker ps -a -q)
-    docker pull node:20-slim || error_exit "Docker pull failed."
 fi
 
 if $deploy_studio; then
@@ -348,66 +333,66 @@ if $load_images; then
     # Supabase Images
     file_name=$(find_files_with_prefix "studio@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image studio."
+    docker load < "$file_name" || error_continue "Failed to load image studio."
     
     file_name=$(find_files_with_prefix "edge-runtime@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image edge-runtime."
+    docker load < "$file_name" || error_continue "Failed to load image edge-runtime."
     
     file_name=$(find_files_with_prefix "postgres@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image postgres."
+    docker load < "$file_name" || error_continue "Failed to load image postgres."
     
     file_name=$(find_files_with_prefix "gotrue@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image gotrue."
+    docker load < "$file_name" || error_continue "Failed to load image gotrue."
     
     file_name=$(find_files_with_prefix "realtime@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image realtime."
+    docker load < "$file_name" || error_continue "Failed to load image realtime."
     
     file_name=$(find_files_with_prefix "storage-api@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image storage-api."
+    docker load < "$file_name" || error_continue "Failed to load image storage-api."
     
     file_name=$(find_files_with_prefix "postgres-meta@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image postgres-meta."
+    docker load < "$file_name" || error_continue "Failed to load image postgres-meta."
     
     file_name=$(find_files_with_prefix "postgrest@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image postgrest."
+    docker load < "$file_name" || error_continue "Failed to load image postgrest."
     
     file_name=$(find_files_with_prefix "logflare@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image logflare."
+    docker load < "$file_name" || error_continue "Failed to load image logflare."
     
     file_name=$(find_files_with_prefix "vector@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image vector."
+    docker load < "$file_name" || error_continue "Failed to load image vector."
     
     file_name=$(find_files_with_prefix "kong@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image kong."
+    docker load < "$file_name" || error_continue "Failed to load image kong."
     
     file_name=$(find_files_with_prefix "imgproxy@")
     echo "Loading image: $file_name"
-    docker load < "$file_name" || error_exit "Failed to load image imgproxy."
+    docker load < "$file_name" || error_continue "Failed to load image imgproxy."
     
     # Monitor
     echo "Loading image: monitor"
     televolution_monitor_file_name=$(find_files_with_prefix "televolution_monitor@")
-    docker load < "$televolution_monitor_file_name" || error_exit "Failed to load image televolution_monitor."
+    docker load < "$televolution_monitor_file_name" || error_continue "Failed to load image televolution_monitor."
 
     # Middleware
     echo "Loading image: middleware"
     televolution_middleware_file_name=$(find_files_with_prefix "televolution_middleware@")
-    docker load < "$televolution_middleware_file_name" || error_exit "Failed to load image televolution_middleware."
+    docker load < "$televolution_middleware_file_name" || error_continue "Failed to load image televolution_middleware."
 
     # Frontend
     echo "Loading image: frontend"
     televolution_frontend_file_name=$(find_files_with_prefix "televolution_frontend@")
-    docker load < "$televolution_frontend_file_name" || error_exit "Failed to load image televolution_frontend."
+    docker load < "$televolution_frontend_file_name" || error_continue "Failed to load image televolution_frontend."
 
     # Starting Monitor
     echo "Starting monitor container..."
@@ -415,16 +400,16 @@ if $load_images; then
     echo "Tag: $tag"
     docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$tag
     if [ $? -ne 0 ]; then
-        error_exit "Failed to start the monitor container."
+        error_continue "Failed to start the monitor container."
     fi
 
     # Starting Middleware
     echo "Starting middleware container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
     echo "Tag: $tag"
-    docker run -d --restart=always -p 3000:3000 --env-file .env --name televolution_middleware televolution_middleware:$tag
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$tag
     if [ $? -ne 0 ]; then
-        error_exit "Failed to start the middleware container."
+        error_continue "Failed to start the middleware container."
     fi
 
     cd ..
