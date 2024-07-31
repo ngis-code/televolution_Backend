@@ -566,5 +566,5 @@ if $download_release; then
 
     cd ..
 
-    showSuccess "All assets downloaded successfully into docker_image_builds directory."
+    showSuccess "Downloading Completed!"
 fi
