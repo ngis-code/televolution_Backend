@@ -423,14 +423,12 @@ if $load_images; then
 
     # Running Frontend Container
     echo "Starting Frontend container..."
-    cd televolution_frontend || error_exit "Directory televolution_frontend does not exist."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_frontend@")")
     echo "Tag: $tag"
     docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:$tag
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the frontend container."
     fi
-    cd ..
 
     showSuccess "All Images loaded successfully from docker_image_builds directory."
 
