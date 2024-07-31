@@ -146,7 +146,7 @@ fi
 # Initializations
 # docker login || echo "Docker login failed."
 # git pull || echo "Git pull failed. Continuing..."
-docker pull node:20-slim || error_exit "Docker pull failed."
+# docker pull node:20-slim || error_exit "Docker pull failed."
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
 if $clean_build; then
