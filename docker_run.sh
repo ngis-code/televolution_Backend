@@ -152,9 +152,11 @@ export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
 if $clean_build; then
     docker builder prune || error_exit "Docker builder prune failed."
-    rm -rf docker_image_builds || error_exit "Failed to remove directory docker_image_builds."
-    docker stop $(docker ps -q)
-    docker rm $(docker ps -a -q)
+    # rm -rf docker_image_builds || error_exit "Failed to remove directory docker_image_builds."
+    docker stop $(docker ps -q) || error_continue "Failed to stop all containers."
+    docker rm $(docker ps -a -q) || error_continue "Failed to remove all containers."
+    docker image prune -a || error_continue "Failed to remove all images."
+    docker volume prune -a || error_continue "Failed to remove all volumes."
 fi
 
 if $deploy_studio; then
