@@ -157,7 +157,7 @@ if $clean_build; then
     docker rm $(docker ps -a -q) || error_continue "Failed to remove all containers."
     docker system prune -a
     docker image prune -a || error_continue "Failed to remove all images."
-    docker volume prune -a || error_continue "Failed to remove all volumes."
+    docker volume prune || error_continue "Failed to remove all volumes."
 fi
 
 if $deploy_studio; then
