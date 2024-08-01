@@ -127,6 +127,7 @@ else
                 deploy_studio=true
                 deploy_monitor=true
                 deploy_middleware=true
+                deploy_frontend=true
                 ;;
             -t|--deploy-studio) deploy_studio=true ;;
             -m|--deploy-monitor) deploy_monitor=true ;;
