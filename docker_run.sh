@@ -155,6 +155,7 @@ if $clean_build; then
     # rm -rf docker_image_builds || error_exit "Failed to remove directory docker_image_builds."
     docker stop $(docker ps -q) || error_continue "Failed to stop all containers."
     docker rm $(docker ps -a -q) || error_continue "Failed to remove all containers."
+    docker system prune -a
     docker image prune -a || error_continue "Failed to remove all images."
     docker volume prune -a || error_continue "Failed to remove all volumes."
 fi
