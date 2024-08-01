@@ -399,7 +399,7 @@ if $load_images; then
     echo "Starting monitor container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_monitor@")")
     echo "Tag: $tag"
-    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$tag
+    docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor "televolution_monitor:$tag"
     if [ $? -ne 0 ]; then
         error_continue "Failed to start the monitor container."
     fi
@@ -408,7 +408,7 @@ if $load_images; then
     echo "Starting middleware container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_middleware@")")
     echo "Tag: $tag"
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$tag
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware "televolution_middleware:$tag"
     if [ $? -ne 0 ]; then
         error_continue "Failed to start the middleware container."
     fi
@@ -426,7 +426,7 @@ if $load_images; then
     echo "Starting Frontend container..."
     tag=$(extract_tag "$(find_files_with_prefix "televolution_frontend@")")
     echo "Tag: $tag"
-    docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:$tag
+    docker run -d --restart=always -p 8001:8001 --name televolution_frontend "televolution_frontend:$tag"
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the frontend container."
     fi
@@ -499,10 +499,10 @@ if $download_release; then
     if [[ $download_without_cli == "y" ]]; then
         echo "Downloading the latest release from Github using curl..."
 
-        read -p "Enter the tag to download (press enter for latest): " download_tag
+        read -p "Enter the tag to download (press enter for 0.0.2): " download_tag
 
         if [ -z "$download_tag" ]; then
-            download_tag="latest"
+            download_tag="0.0.2"
         fi
 
         echo "Downloading file edge-runtime@v1.55.0.tar"
