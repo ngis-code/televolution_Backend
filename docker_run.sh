@@ -155,9 +155,10 @@ if $clean_build; then
     # rm -rf docker_image_builds || error_exit "Failed to remove directory docker_image_builds."
     docker stop $(docker ps -q) || error_continue "Failed to stop all containers."
     docker rm $(docker ps -a -q) || error_continue "Failed to remove all containers."
-    docker system prune -a
     docker image prune -a || error_continue "Failed to remove all images."
-    docker volume prune || error_continue "Failed to remove all volumes."
+    docker volume prune || error_continue "Failed to remove all volumes. We will retry another way to remove volumes."
+    docker volume rm $(sudo docker volume ls -q) || error_continue "Failed to remove all volumes."
+    docker system prune -a || error_continue "Failed to remove all unused data."
 fi
 
 if $deploy_studio; then
