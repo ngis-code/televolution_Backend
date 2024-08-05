@@ -148,7 +148,7 @@ fi
 # docker login || echo "Docker login failed."
 # git pull || echo "Git pull failed. Continuing..."
 # docker pull node:20-slim || error_exit "Docker pull failed."
-export DOCKER_DEFAULT_PLATFORM=linux/amd64
+# export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
 if $clean_build; then
     docker builder prune || error_exit "Docker builder prune failed."
@@ -163,7 +163,7 @@ fi
 
 if $deploy_studio; then
     # Building studio
-    docker build . -f apps/studio/Dockerfile --target production -t studio:latest --platform linux/amd64 || error_exit "Docker build failed."
+    docker build . -f apps/studio/Dockerfile --target production -t studio:latest  || error_exit "Docker build failed."
     showSuccess "Studio was built successfully."
 
     cd docker || error_exit "Directory docker does not exist."
@@ -190,7 +190,7 @@ if $deploy_monitor; then
     git pull || error_exit "Git pull failed."
     latestMonitorReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
     echo "Building version: $latestMonitorReleasedVersion"
-    docker build -t televolution_monitor:$latestMonitorReleasedVersion . --platform linux/amd64 || error_exit "Docker build failed."
+    docker build -t televolution_monitor:$latestMonitorReleasedVersion .  || error_exit "Docker build failed."
     docker run -d --restart=always -p 3001:3001 -v televolution_monitor:/app/data --name televolution_monitor televolution_monitor:$latestMonitorReleasedVersion
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the monitor container."
@@ -213,7 +213,7 @@ if $deploy_middleware; then
         error_exit "Failed to get the latest middleware version."
     fi
     echo "Building version: $latestMiddlewareReleasedVersion"
-    docker build -t televolution_middleware:$latestMiddlewareReleasedVersion . --platform linux/amd64 || error_exit "Docker build failed."
+    docker build -t televolution_middleware:$latestMiddlewareReleasedVersion .  || error_exit "Docker build failed."
     docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the middleware container."
@@ -242,7 +242,7 @@ if $deploy_frontend; then
     echo "Building version: $latestFrontendReleasedVersion"
 
     # docker build -t televolution_frontend:latest . || error_exit "Docker build failed."
-    docker build -t televolution_frontend:$latestFrontendReleasedVersion . --platform linux/amd64 || error_exit "Docker build failed."
+    docker build -t televolution_frontend:$latestFrontendReleasedVersion .  || error_exit "Docker build failed."
 
     # docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:latest
     docker run -d --restart=always -p 8001:8001 --name televolution_frontend televolution_frontend:$latestFrontendReleasedVersion
