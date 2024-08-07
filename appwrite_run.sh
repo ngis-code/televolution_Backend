@@ -40,6 +40,8 @@ print_help(){
 }
 
 build_appwrite(){
+    export DOCKER_DEFAULT_PLATFORM=linux/amd64
+    
     # METHOD 1
     # curl -L -O https://appwrite.io/install/compose appwrite/docker-compose.yml || error_exit "Failed to download docker-compose file."
     # curl -L -O https://appwrite.io/install/env appwrite/.env || error_exit "Failed to download install file."
