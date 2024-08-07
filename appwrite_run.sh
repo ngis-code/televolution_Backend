@@ -35,7 +35,7 @@ print_help(){
     echo "  clean               Perform a docker clean and removes the docker_image_builds directory"
     echo "  save                Save the images to the docker_image_builds directory"
     echo "  load                Load the images from the docker_image_builds directory"
-    echo "  build               Builds studio, monitor, and middleware (same as -t -m -d)"
+    echo "  build               Pulls and builds the docker image"
     echo "  download            Downloads the latest release from Github"
 }
 
