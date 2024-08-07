@@ -40,12 +40,15 @@ print_help(){
 }
 
 build_appwrite(){
+    # METHOD 1
     # curl -L -O https://appwrite.io/install/compose appwrite/docker-compose.yml || error_exit "Failed to download docker-compose file."
     # curl -L -O https://appwrite.io/install/env appwrite/.env || error_exit "Failed to download install file."
     # cd appwrite || error_exit "Directory docker does not exist."
     # docker compose up -d --remove-orphans || error_exit "Failed to build Appwrite."
     # showSuccess "Appwrite built successfully."
     # cd ..
+
+    # METHOD 2
     docker run -it --rm \
     --volume /var/run/docker.sock:/var/run/docker.sock \
     --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
