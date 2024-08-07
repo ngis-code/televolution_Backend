@@ -113,6 +113,8 @@ load_appwrite_image(){
     echo "Loading Image assistant..."
     docker load -i assistant.tar || error_continue "Cannot load assistant."
 
+    cd ..
+
     echo "Running Appwrite..."
     if [ ! -d "appwrite" ]; then
         mkdir appwrite || error_exit "Failed to create directory appwrite."
@@ -143,7 +145,7 @@ clean_docker(){
     docker image prune -a || error_continue "Failed to remove all images."
     docker volume prune || error_continue "Failed to remove all volumes. We will retry another way to remove volumes."
     docker volume rm $(sudo docker volume ls -q) || error_continue "Failed to remove all volumes."
-    docker system prune -a || error_continue "Failed to remove all unused data."
+    # docker system prune -a || error_continue "Failed to remove all unused data."
 }
 
 download_release(){
