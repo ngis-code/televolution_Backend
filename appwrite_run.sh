@@ -56,9 +56,19 @@ build_appwrite(){
 
 save_appwrite_image(){
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
-    error_exit "Change the appwrite image name first!!!!!!!!!!!!!!!!!"
-    docker save -o appwrite.tar:v0.0.1 || error_exit "Failed to save image."
-    showSuccess "Image saved successfully."
+    
+    docker save -o traefik.tar traefik:2.11
+    docker save -o mariadb.tar mariadb:10.11
+    docker save -o php.tar openruntimes/php:v3-8.0
+    docker save -o python.tar openruntimes/python:v3-3.9
+    docker save -o node.tar openruntimes/node:v3-16.0
+    docker save -o ruby.tar openruntimes/ruby:v3-3.0
+    docker save -o appwrite.tar appwrite/appwrite:1.5.7
+    docker save -o redis.tar redis:7.2.4-alpine
+    docker save -o executor.tar openruntimes/executor:0.5.5
+    docker save -o assistant.tar appwrite/assistant:0.4.0
+    
+    showSuccess "All Images saved successfully."
     cd ..
 }
 
