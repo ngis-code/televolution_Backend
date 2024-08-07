@@ -57,16 +57,16 @@ build_appwrite(){
 save_appwrite_image(){
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
     
-    docker save -o traefik.tar traefik:2.11
-    docker save -o mariadb.tar mariadb:10.11
-    docker save -o php.tar openruntimes/php:v3-8.0
-    docker save -o python.tar openruntimes/python:v3-3.9
-    docker save -o node.tar openruntimes/node:v3-16.0
-    docker save -o ruby.tar openruntimes/ruby:v3-3.0
-    docker save -o appwrite.tar appwrite/appwrite:1.5.7
-    docker save -o redis.tar redis:7.2.4-alpine
-    docker save -o executor.tar openruntimes/executor:0.5.5
-    docker save -o assistant.tar appwrite/assistant:0.4.0
+    docker save -o traefik.tar traefik:2.11 || error_continue "Cannot save traefik."
+    docker save -o mariadb.tar mariadb:10.11 || error_continue "Cannot save mariadb."
+    docker save -o php.tar openruntimes/php:v3-8.0 || error_continue "Cannot save php."
+    docker save -o python.tar openruntimes/python:v3-3.9 || error_continue "Cannot save python."
+    docker save -o node.tar openruntimes/node:v3-16.0 || error_continue "Cannot save node."
+    docker save -o ruby.tar openruntimes/ruby:v3-3.0 || error_continue "Cannot save ruby."
+    docker save -o appwrite.tar appwrite/appwrite:1.5.7 || error_continue "Cannot save appwrite."
+    docker save -o redis.tar redis:7.2.4-alpine || error_continue "Cannot save redis."
+    docker save -o executor.tar openruntimes/executor:0.5.5 || error_continue "Cannot save executor."
+    docker save -o assistant.tar appwrite/assistant:0.4.0 || error_continue "Cannot save assistant."
     
     showSuccess "All Images saved successfully."
     cd ..
@@ -75,9 +75,19 @@ save_appwrite_image(){
 load_appwrite_image(){
     error_exit "TODO: load images"
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
-    error_exit "Change the appwrite image file name first!!!!!!!!!!!!!!!!!"
-    docker load -i appwrite.tar || error_exit "Failed to load image."
-    showSuccess "Image loaded successfully."
+
+    docker load -i traefik.tar || error_continue "Cannot load traefik."
+    docker load -i mariadb.tar || error_continue "Cannot load mariadb."
+    docker load -i php.tar || error_continue "Cannot load php."
+    docker load -i python.tar || error_continue "Cannot load python."
+    docker load -i node.tar || error_continue "Cannot load node."
+    docker load -i ruby.tar || error_continue "Cannot load ruby."
+    docker load -i appwrite.tar || error_continue "Cannot load appwrite."
+    docker load -i redis.tar || error_continue "Cannot load redis."
+    docker load -i executor.tar || error_continue "Cannot load executor."
+    docker load -i assistant.tar || error_continue "Cannot load assistant."
+
+    showSuccess "Images loaded successfully."
     cd ..
 }
 
