@@ -161,9 +161,35 @@ download_release(){
     mkdir "$BUILD_DIR" || error_exit "Failed to create directory $BUILD_DIR."
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
 
-    echo "Downloading file docker image..."
-    error_exit "TODO: change name of tar file"
-    curl -L -O "https://todo.tar" || error_exit "Failed to download release."
+    echo "Downloading file appwrite..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/appwrite.tar" || error_exit "Failed to download appwrite."
+    
+    echo "Downloading assistant.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/assistant.tar" || error_exit "Failed to download assistant.tar."
+
+    echo "Downloading executor.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/executor.tar" || error_exit "Failed to download executor.tar."
+
+    echo "Downloading mariadb.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/mariadb.tar" || error_exit "Failed to download mariadb.tar."
+
+    echo "Downloading node.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/node.tar" || error_exit "Failed to download node.tar."
+
+    echo "Downloading php.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/php.tar" || error_exit "Failed to download php.tar."
+
+    echo "Downloading python.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/python.tar" || error_exit "Failed to download python.tar."
+
+    echo "Downloading redis.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/redis.tar" || error_exit "Failed to download redis.tar."
+
+    echo "Downloading ruby.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/ruby.tar" || error_exit "Failed to download ruby.tar."
+
+    echo "Downloading traefik.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/traefik.tar" || error_exit "Failed to download traefik.tar."
 
     showSuccess "Release downloaded successfully."
 }
