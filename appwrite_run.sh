@@ -113,7 +113,25 @@ load_appwrite_image(){
     echo "Loading Image assistant..."
     docker load -i assistant.tar || error_continue "Cannot load assistant."
 
+    echo "Running Appwrite..."
+    if [ ! -d "appwrite" ]; then
+        mkdir appwrite || error_exit "Failed to create directory appwrite."
+        cd appwrite || error_exit "Directory appwrite does not exist."
+        
+        curl -L -O https://appwrite.io/install/compose || error_exit "Failed to download docker-compose file."
+        mv compose docker-compose.yml || error_exit "Failed to rename docker-compose file."
+
+        curl -L -O https://appwrite.io/install/env || error_exit "Failed to download install file."
+        mv env .env || error_exit "Failed to rename install file."
+        
+        cd ..
+    fi
+
+    cd appwrite || error_exit "Directory appwrite does not exist."
+
+    docker compose up -d || error_exit "Failed to build Appwrite."
     showSuccess "Images loaded successfully."
+
     cd ..
 }
 
