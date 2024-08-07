@@ -9,14 +9,14 @@ GITHUB_REPO="https://github.com/ngis-code/televolution_Backend"
 showSuccess() {
     echo -e "${GREEN}$1${NC}"
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        osascript -e 'display notification "'"$1"'" with title "Success"'
+        osascript -e 'beep 1'
     fi
 }
 
 error_exit() {
     echo -e "${RED}$1${NC}" 1>&2
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        osascript -e 'display notification "'"$1"'" with title "Error"'
+        osascript -e 'beep 2'
     fi
     exit 1
 }
@@ -24,7 +24,7 @@ error_exit() {
 error_continue() {
     echo -e "${RED}$1${NC}" 1>&2
     if [[ "$OSTYPE" == "darwin"* ]]; then
-        osascript -e 'display notification "'"$1"'" with title "Error"'
+        osascript -e 'beep 2'
     fi
 }
 
