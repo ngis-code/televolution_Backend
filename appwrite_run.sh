@@ -58,6 +58,10 @@ build_appwrite(){
 }
 
 save_appwrite_image(){
+    if [ ! -d "$BUILD_DIR" ]; then
+        mkdir "$BUILD_DIR" || error_exit "Failed to create directory $BUILD_DIR."
+    fi
+
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
     
     docker save -o traefik.tar traefik:2.11 || error_continue "Cannot save traefik."
