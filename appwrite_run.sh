@@ -32,9 +32,9 @@ print_help(){
     echo "Usage: $0 [options]"
     echo "Options:"
     echo "  help, -h, --help    Display this help message"
-    echo "  clean               Perform a docker clean and removes the docker_image_builds directory"
-    echo "  save                Save the images to the docker_image_builds directory"
-    echo "  load                Load the images from the docker_image_builds directory"
+    echo "  clean               Perform a docker clean and removes the $BUILD_DIR directory"
+    echo "  save                Save the images to the $BUILD_DIR directory"
+    echo "  load                Load the images from the $BUILD_DIR directory"
     echo "  build               Pulls and builds the docker image"
     echo "  download            Downloads the latest release from Github"
 }
@@ -73,7 +73,7 @@ load_appwrite_image(){
 
 clean_docker(){
     docker builder prune || error_exit "Docker builder prune failed."
-    # rm -rf docker_image_builds || error_exit "Failed to remove directory docker_image_builds."
+    # rm -rf "$BUILD_DIR" || error_exit "Failed to remove directory $BUILD_DIR."
     docker stop $(docker ps -q) || error_continue "Failed to stop all containers."
     docker rm $(docker ps -a -q) || error_continue "Failed to remove all containers."
     docker image prune -a || error_continue "Failed to remove all images."
