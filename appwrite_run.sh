@@ -337,6 +337,9 @@ download_release(){
     echo "Downloading traefik.tar..."
     curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/traefik.tar" || error_continue "Failed to download traefik.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/traefik.tar"
 
+    echo "Downloading televolution_middleware.tar..."
+    curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/televolution_middleware.tar" || error_continue "Failed to download traefik.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/traefik.tar"
+
     showSuccess "Release downloaded successfully."
 
     cd ..
