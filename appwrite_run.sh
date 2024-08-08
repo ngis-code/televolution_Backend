@@ -91,17 +91,17 @@ function choose_multiple_menu() {
             if [ "$index" == "$cur" ]; then
                 if [[ " ${selected[@]} " =~ " ${options[$cur]} " ]]; then
                     # echo -e " >\e[7m\e[32m$o\e[0m"
-                    echo -e " >${GREEN}$o${NC}"
+                    echo -e " >*${GREEN}$o${NC}"
                 else
                     # echo -e " >\e[7m$o\e[0m"
-                    echo -e " >${NC}$o${NC}"
+                    echo -e " > ${NC}$o${NC}"
                 fi
             else
                 if [[ " ${selected[@]} " =~ " ${options[$index]} " ]]; then
                     # echo -e " *\e[32m$o\e[0m"
-                    echo -e " ${GREEN}*$o${NC}"
+                    echo -e "  *${GREEN}$o${NC}"
                 else
-                    echo "  $o"
+                    echo "   $o"
                 fi
             fi
             (( index++ ))
