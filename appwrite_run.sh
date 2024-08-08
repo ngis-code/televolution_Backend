@@ -90,13 +90,16 @@ function choose_multiple_menu() {
         for o in "${options[@]}"; do
             if [ "$index" == "$cur" ]; then
                 if [[ " ${selected[@]} " =~ " ${options[$cur]} " ]]; then
-                    echo -e " >\e[7m\e[32m$o\e[0m"
+                    # echo -e " >\e[7m\e[32m$o\e[0m"
+                    echo -e " >${GREEN}$o${NC}"
                 else
-                    echo -e " >\e[7m$o\e[0m"
+                    # echo -e " >\e[7m$o\e[0m"
+                    echo -e " >${NC}$o${NC}"
                 fi
             else
                 if [[ " ${selected[@]} " =~ " ${options[$index]} " ]]; then
-                    echo -e " *\e[32m$o\e[0m"
+                    # echo -e " *\e[32m$o\e[0m"
+                    echo -e " ${GREEN}*$o${NC}"
                 else
                     echo "  $o"
                 fi
