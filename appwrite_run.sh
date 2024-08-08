@@ -141,6 +141,8 @@ function choose_multiple_menu() {
 }
 
 build_middleware(){
+    export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
     if [ -d "televolution_Middleware" ]; then
         echo "Directory televolution_Middleware already exists."
     else
@@ -169,30 +171,48 @@ build_appwrite(){
     # METHOD 1
     # curl -L -O https://appwrite.io/install/compose appwrite/docker-compose.yml || error_exit "Failed to download docker-compose file."
     # curl -L -O https://appwrite.io/install/env appwrite/.env || error_exit "Failed to download install file."
-    # cd appwrite || error_exit "Directory docker does not exist."
-    # docker compose up -d --remove-orphans || error_exit "Failed to build Appwrite."
-    # showSuccess "Appwrite built successfully."
-    # cd ..
+    cd appwrite || error_exit "Directory docker does not exist."
+    docker compose up -d --remove-orphans || error_exit "Failed to build Appwrite."
+    showSuccess "Appwrite built successfully."
+    cd ..
 
     # METHOD 2
-    docker run -it --rm \
-    --volume /var/run/docker.sock:/var/run/docker.sock \
-    --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
-    --entrypoint="install" \
-    appwrite/appwrite:1.5.7 || error_exit "Failed to install Appwrite."
-    showSuccess "Appwrite installed successfully."
-
-    build_middleware
+    # docker run -it --rm \
+    # --volume /var/run/docker.sock:/var/run/docker.sock \
+    # --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
+    # --entrypoint="install" \
+    # appwrite/appwrite:1.5.7 || error_exit "Failed to install Appwrite."
+    # showSuccess "Appwrite installed successfully."
 }
 
-save_appwrite_image(){
+build_images(){
+    options=(
+        "Build Appwrite"
+        "Build Middleware"
+    )
+
+    choose_multiple_menu "Please select the images to build (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
+
+    for image in $selected_images; do
+        case $image in
+            "Build Appwrite")
+                build_appwrite
+                ;;
+            "Build Middleware")
+                build_middleware
+                ;;
+        esac
+    done
+}
+
+save_images(){
     cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
     git pull || error_exit "Git pull failed."
     latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
     if [ -z "$latestMiddlewareReleasedVersion" ]; then
         error_exit "Failed to get the latest middleware version."
     fi
-    cd..
+    cd ..
 
     if [ ! -d "$BUILD_DIR" ]; then
         mkdir "$BUILD_DIR" || error_exit "Failed to create directory $BUILD_DIR."
@@ -428,7 +448,7 @@ if [ "$build" = true ]; then
 fi
 
 if [ "$save" = true ]; then
-    save_appwrite_image
+    save_images
 fi
 
 if [ "$load" = true ]; then
