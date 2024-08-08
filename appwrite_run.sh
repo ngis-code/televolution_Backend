@@ -71,7 +71,6 @@ function choose_single_menu() {
     printf -v $outvar "${options[$cur]}"
 }
 
-# Use it for multiple options
 function choose_multiple_menu() {
     local prompt="$1"
     local outvar="$2"
@@ -81,7 +80,7 @@ function choose_multiple_menu() {
     local cur=0
     local count=${#options[@]}
     local index=0
-    local esc=$(echo -en "\e") 
+    local esc=$(printf '\033')
     local selected=("${options[@]}")
 
     printf "$prompt\n"
@@ -91,13 +90,13 @@ function choose_multiple_menu() {
         for o in "${options[@]}"; do
             if [ "$index" == "$cur" ]; then
                 if [[ " ${selected[@]} " =~ " ${options[$cur]} " ]]; then
-                    echo -e " >\e[7m\e[32m$o\e[0m" 
+                    echo -e " >\e[7m\e[32m$o\e[0m"
                 else
-                    echo -e " >\e[7m$o\e[0m" 
+                    echo -e " >\e[7m$o\e[0m"
                 fi
             else
                 if [[ " ${selected[@]} " =~ " ${options[$index]} " ]]; then
-                    echo -e " *\e[32m$o\e[0m" 
+                    echo -e " *\e[32m$o\e[0m"
                 else
                     echo "  $o"
                 fi
@@ -105,29 +104,36 @@ function choose_multiple_menu() {
             (( index++ ))
         done
 
-        read -s -n3 key 
-        if [[ $key == $esc[A ]]; then 
-            (( cur-- ))
-            (( cur < 0 )) && (( cur = 0 ))
-        elif [[ $key == $esc[B ]]; then 
-            (( cur++ ))
-            (( cur >= count )) && (( cur = count - 1 ))
-        elif [[ $key == "" ]]; then 
-            break
-        elif [[ $key == $esc[C ]]; then 
-            if [[ " ${selected[@]} " =~ " ${options[$cur]} " ]]; then
-                selected=("${selected[@]/${options[$cur]}/}")
-            else                
-                selected+=("${options[$cur]}")
-            fi
-        fi
-        
-        echo -en "\e[${count}A"
+        read -rsn1 key
+        case "$key" in
+            $esc)
+                read -rsn2 key
+                if [[ "$key" == "[A" ]]; then
+                    (( cur-- ))
+                    (( cur < 0 )) && (( cur = 0 ))
+                elif [[ "$key" == "[B" ]]; then
+                    (( cur++ ))
+                    (( cur >= count )) && (( cur = count - 1 ))
+                elif [[ "$key" == "[C" ]]; then
+                    if [[ " ${selected[@]} " =~ " ${options[$cur]} " ]]; then
+                        selected=("${selected[@]/${options[$cur]}/}")
+                    else
+                        selected+=("${options[$cur]}")
+                    fi
+                fi
+                ;;
+            "")
+                break
+                ;;
+        esac
+
+        printf "\033c"
+        printf "$prompt\n"
     done
 
     local selected_string
     selected_string=$(printf "%s " "${selected[@]}")
-    printf -v $outvar "%s" "$selected_string"
+    printf -v "$outvar" "%s" "$selected_string"
 }
 
 build_appwrite(){
