@@ -295,7 +295,7 @@ load_appwrite_image(){
 
     echo "Running Middleware..."
     cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:v0.0.1
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the middleware container."
     fi
