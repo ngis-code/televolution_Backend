@@ -81,7 +81,8 @@ function choose_multiple_menu() {
     local count=${#options[@]}
     local index=0
     local esc=$(printf '\033')
-    local selected=("${options[@]}")
+    # local selected=("${options[@]}")
+    local selected=()
 
     printf "$prompt\n"
 
