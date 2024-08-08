@@ -140,6 +140,29 @@ function choose_multiple_menu() {
     printf -v "$outvar" "%s" "$selected_string"
 }
 
+build_middleware(){
+    if [ -d "televolution_Middleware" ]; then
+        echo "Directory televolution_Middleware already exists."
+    else
+        git clone https://github.com/ngis-code/televolution_Middleware || error_exit "Git clone failed."
+    fi
+
+    cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
+    git pull || error_exit "Git pull failed."
+    latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+    if [ -z "$latestMiddlewareReleasedVersion" ]; then
+        error_exit "Failed to get the latest middleware version."
+    fi
+    echo "Building version: $latestMiddlewareReleasedVersion"
+    docker build -t televolution_middleware:$latestMiddlewareReleasedVersion .  || error_exit "Docker build failed."
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the middleware container."
+    fi
+    showSuccess "Televolution Middleware was built successfully."
+    cd ..
+}
+
 build_appwrite(){
     export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
@@ -158,9 +181,19 @@ build_appwrite(){
     --entrypoint="install" \
     appwrite/appwrite:1.5.7 || error_exit "Failed to install Appwrite."
     showSuccess "Appwrite installed successfully."
+
+    build_middleware
 }
 
 save_appwrite_image(){
+    cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
+    git pull || error_exit "Git pull failed."
+    latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
+    if [ -z "$latestMiddlewareReleasedVersion" ]; then
+        error_exit "Failed to get the latest middleware version."
+    fi
+    cd..
+
     if [ ! -d "$BUILD_DIR" ]; then
         mkdir "$BUILD_DIR" || error_exit "Failed to create directory $BUILD_DIR."
     fi
@@ -178,6 +211,7 @@ save_appwrite_image(){
         "redis:7.2.4-alpine"
         "openruntimes/executor:0.5.5"
         "appwrite/assistant:0.4.0"
+        "televolution_middleware:$latestMiddlewareReleasedVersion"
     )
 
     choose_multiple_menu "Please select the Docker images to save (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
@@ -206,6 +240,7 @@ load_appwrite_image(){
         "redis"
         "executor"
         "assistant"
+        "televolution_middleware"
     )
     choose_multiple_menu "Please select the Docker images to load (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
 
@@ -236,6 +271,15 @@ load_appwrite_image(){
     docker compose up -d || error_exit "Failed to build Appwrite."
     showSuccess "Images loaded successfully."
 
+    cd ..
+
+    echo "Running Middleware..."
+    cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware
+    if [ $? -ne 0 ]; then
+        error_exit "Failed to start the middleware container."
+    fi
+    showSuccess "Middleware started successfully."
     cd ..
 }
 
