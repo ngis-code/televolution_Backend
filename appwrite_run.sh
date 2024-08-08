@@ -341,44 +341,12 @@ download_release(){
         "televolution_middleware"
     )
 
-    # echo "Downloading file appwrite..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/appwrite.tar" || error_continue "Failed to download appwrite.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/appwrite.tar"
-    
-    # echo "Downloading assistant.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/assistant.tar" || error_continue "Failed to download assistant.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/assistant.tar"
-
-    # echo "Downloading executor.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/executor.tar" || error_continue "Failed to download executor.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/executor.tar"
-
-    # echo "Downloading mariadb.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/mariadb.tar" || error_continue "Failed to download mariadb.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/mariadb.tar"
-
-    # echo "Downloading node.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/node.tar" || error_continue "Failed to download node.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/node.tar"
-
-    # echo "Downloading php.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/php.tar" || error_continue "Failed to download php.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/php.tar"
-
-    # echo "Downloading python.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/python.tar" || error_continue "Failed to download python.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/python.tar"
-
-    # echo "Downloading redis.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/redis.tar" || error_continue "Failed to download redis.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/redis.tar"
-
-    # echo "Downloading ruby.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/ruby.tar" || error_continue "Failed to download ruby.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/ruby.tar"
-
-    # echo "Downloading traefik.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/traefik.tar" || error_continue "Failed to download traefik.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/traefik.tar"
-
-    # echo "Downloading televolution_middleware.tar..."
-    # curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/televolution_middleware.tar" || error_continue "Failed to download televolution_middleware.tar. Run curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/televolution_middleware.tar"
-
     choose_multiple_menu "Please select the Docker images to download (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
 
     for image in $selected_images; do
         echo "Downloading Image $image..."
-        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/${image}.tar" || { error_continue "Cannot download $image. Run curl -L -O "; continue; }
+        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/${image}.tar" || { error_continue "Cannot download $image. Run 'cd $BUILD_DIR && curl -L -O \"https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/${image}.tar'"; continue; }
+    done
 
     showSuccess "Release downloaded successfully."
 
