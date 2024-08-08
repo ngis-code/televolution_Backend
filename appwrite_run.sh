@@ -183,6 +183,7 @@ save_appwrite_image(){
 
     for image in $selected_images; do
         image_name=$(echo "$image" | cut -d':' -f1)
+        image_name=$(echo "$image_name" | awk -F'/' '{print $NF}')
         echo "Saving Image $image as ${image_name}.tar ..."
         docker save -o "${image_name}.tar" "$image" || { error_continue "Cannot save $image."; continue; }
     done
