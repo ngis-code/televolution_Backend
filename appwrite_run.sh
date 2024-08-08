@@ -193,16 +193,13 @@ build_images(){
 
     choose_multiple_menu "Please select the images to build (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
 
-    for image in $selected_images; do
-        case $image in
-            "Build Appwrite")
-                build_appwrite
-                ;;
-            "Build Middleware")
-                build_middleware
-                ;;
-        esac
-    done
+    if [[ " ${selected_images[@]} " =~ " Build Appwrite " ]]; then
+        build_appwrite
+    fi
+
+    if [[ " ${selected_images[@]} " =~ " Build Middleware " ]]; then
+        build_middleware
+    fi
 }
 
 save_images(){
@@ -293,12 +290,15 @@ load_appwrite_image(){
 
     cd ..
 
-    echo "Running Middleware..."
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:v0.0.1
-    if [ $? -ne 0 ]; then
-        error_exit "Failed to start the middleware container."
+    # if option has middleware
+    if [[ " ${selected_images[@]} " =~ " televolution_middleware " ]]; then
+        echo "Running Middleware..."
+        docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:v0.0.1
+        if [ $? -ne 0 ]; then
+            error_exit "Failed to start the middleware container."
+        fi
+        showSuccess "Middleware started successfully."
     fi
-    showSuccess "Middleware started successfully."
 }
 
 clean_docker(){
