@@ -39,6 +39,97 @@ print_help(){
     echo "  download            Downloads the latest release from Github"
 }
 
+# Use it choose a single option
+function choose_single_menu() {
+    local prompt="$1" outvar="$2"
+    shift
+    shift
+    local options=("$@") cur=0 count=${#options[@]} index=0
+    local esc=$(echo -en "\e") 
+    printf "$prompt\n"
+    while true
+    do
+        index=0 
+        for o in "${options[@]}"
+        do
+            if [ "$index" == "$cur" ]
+            then echo -e " >\e[7m$o\e[0m" 
+            else echo "  $o"
+            fi
+            (( index++ ))
+        done
+        read -s -n3 key 
+        if [[ $key == $esc[A ]] 
+        then (( cur-- )); (( cur < 0 )) && (( cur = 0 ))
+        elif [[ $key == $esc[B ]] 
+        then (( cur++ )); (( cur >= count )) && (( cur = count - 1 ))
+        elif [[ $key == "" ]] 
+        then break
+        fi
+        echo -en "\e[${count}A" 
+    done
+    printf -v $outvar "${options[$cur]}"
+}
+
+# Use it for multiple options
+function choose_multiple_menu() {
+    local prompt="$1"
+    local outvar="$2"
+    shift
+    shift
+    local options=("$@")
+    local cur=0
+    local count=${#options[@]}
+    local index=0
+    local esc=$(echo -en "\e") 
+    local selected=("${options[@]}")
+
+    printf "$prompt\n"
+
+    while true; do
+        index=0
+        for o in "${options[@]}"; do
+            if [ "$index" == "$cur" ]; then
+                if [[ " ${selected[@]} " =~ " ${options[$cur]} " ]]; then
+                    echo -e " >\e[7m\e[32m$o\e[0m" 
+                else
+                    echo -e " >\e[7m$o\e[0m" 
+                fi
+            else
+                if [[ " ${selected[@]} " =~ " ${options[$index]} " ]]; then
+                    echo -e " *\e[32m$o\e[0m" 
+                else
+                    echo "  $o"
+                fi
+            fi
+            (( index++ ))
+        done
+
+        read -s -n3 key 
+        if [[ $key == $esc[A ]]; then 
+            (( cur-- ))
+            (( cur < 0 )) && (( cur = 0 ))
+        elif [[ $key == $esc[B ]]; then 
+            (( cur++ ))
+            (( cur >= count )) && (( cur = count - 1 ))
+        elif [[ $key == "" ]]; then 
+            break
+        elif [[ $key == $esc[C ]]; then 
+            if [[ " ${selected[@]} " =~ " ${options[$cur]} " ]]; then
+                selected=("${selected[@]/${options[$cur]}/}")
+            else                
+                selected+=("${options[$cur]}")
+            fi
+        fi
+        
+        echo -en "\e[${count}A"
+    done
+
+    local selected_string
+    selected_string=$(printf "%s " "${selected[@]}")
+    printf -v $outvar "%s" "$selected_string"
+}
+
 build_appwrite(){
     export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
@@ -65,27 +156,27 @@ save_appwrite_image(){
     fi
 
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
-    
-    echo "Saving Image traefik..."
-    docker save -o traefik.tar traefik:2.11 || error_continue "Cannot save traefik."
-    echo "Saving Image mariadb..."
-    docker save -o mariadb.tar mariadb:10.11 || error_continue "Cannot save mariadb."
-    echo "Saving Image php..."
-    docker save -o php.tar openruntimes/php:v3-8.0 || error_continue "Cannot save php."
-    echo "Saving Image python..."
-    docker save -o python.tar openruntimes/python:v3-3.9 || error_continue "Cannot save python."
-    echo "Saving Image node..."
-    docker save -o node.tar openruntimes/node:v3-16.0 || error_continue "Cannot save node."
-    echo "Saving Image ruby..."
-    docker save -o ruby.tar openruntimes/ruby:v3-3.0 || error_continue "Cannot save ruby."
-    echo "Saving Image appwrite..."
-    docker save -o appwrite.tar appwrite/appwrite:1.5.7 || error_continue "Cannot save appwrite."
-    echo "Saving Image redis..."
-    docker save -o redis.tar redis:7.2.4-alpine || error_continue "Cannot save redis."
-    echo "Saving Image executor..."
-    docker save -o executor.tar openruntimes/executor:0.5.5 || error_continue "Cannot save executor."
-    echo "Saving Image assistant..."
-    docker save -o assistant.tar appwrite/assistant:0.4.0 || error_continue "Cannot save assistant."
+
+    options=(
+        "traefik:2.11"
+        "mariadb:10.11"
+        "openruntimes/php:v3-8.0"
+        "openruntimes/python:v3-3.9"
+        "openruntimes/node:v3-16.0"
+        "openruntimes/ruby:v3-3.0"
+        "appwrite/appwrite:1.5.7"
+        "redis:7.2.4-alpine"
+        "openruntimes/executor:0.5.5"
+        "appwrite/assistant:0.4.0"
+    )
+
+    choose_multiple_menu "Please select the Docker images to save (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
+
+    for image in $selected_images; do
+        image_name=$(echo "$image" | cut -d':' -f1)
+        echo "Saving Image $image as ${image_name}.tar ..."
+        docker save -o "${image_name}.tar" "$image" || { error_continue "Cannot save $image."; continue; }
+    done
     
     showSuccess "All Images saved successfully."
     cd ..
@@ -93,27 +184,24 @@ save_appwrite_image(){
 
 load_appwrite_image(){
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
+    options=(
+        "traefik"
+        "mariadb"
+        "php"
+        "python"
+        "node"
+        "ruby"
+        "appwrite"
+        "redis"
+        "executor"
+        "assistant"
+    )
+    choose_multiple_menu "Please select the Docker images to load (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
 
-    echo "Loading Image traefik..."
-    docker load -i traefik.tar || error_continue "Cannot load traefik."
-    echo "Loading Image mariadb..."
-    docker load -i mariadb.tar || error_continue "Cannot load mariadb."
-    echo "Loading Image php..."
-    docker load -i php.tar || error_continue "Cannot load php."
-    echo "Loading Image python..."
-    docker load -i python.tar || error_continue "Cannot load python."
-    echo "Loading Image node..."
-    docker load -i node.tar || error_continue "Cannot load node."
-    echo "Loading Image ruby..."
-    docker load -i ruby.tar || error_continue "Cannot load ruby."
-    echo "Loading Image appwrite..."
-    docker load -i appwrite.tar || error_continue "Cannot load appwrite."
-    echo "Loading Image redis..."
-    docker load -i redis.tar || error_continue "Cannot load redis."
-    echo "Loading Image executor..."
-    docker load -i executor.tar || error_continue "Cannot load executor."
-    echo "Loading Image assistant..."
-    docker load -i assistant.tar || error_continue "Cannot load assistant."
+    for image in $selected_images; do
+        echo "Loading Image $image..."
+        docker load -i "${image}.tar" || { error_continue "Cannot load $image."; continue; }
+    done
 
     cd ..
 
@@ -122,6 +210,7 @@ load_appwrite_image(){
         mkdir appwrite || error_exit "Failed to create directory appwrite."
         cd appwrite || error_exit "Directory appwrite does not exist."
         
+        echo "Fetching template env files as no env file exist..."
         curl -L -O https://appwrite.io/install/compose || error_exit "Failed to download docker-compose file."
         mv compose docker-compose.yml || error_exit "Failed to rename docker-compose file."
 
