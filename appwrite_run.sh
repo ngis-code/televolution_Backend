@@ -150,7 +150,7 @@ build_middleware(){
     fi
 
     cd televolution_Middleware || error_exit "Directory televolution_Middleware does not exist."
-    git pull || error_exit "Git pull failed."
+    git pull || ./update.sh "some change" || error_exit "Git pull failed."
     latestMiddlewareReleasedVersion=$(git describe --tags `git rev-list --tags --max-count=1`)
     if [ -z "$latestMiddlewareReleasedVersion" ]; then
         error_exit "Failed to get the latest middleware version."
