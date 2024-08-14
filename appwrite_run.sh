@@ -157,7 +157,7 @@ build_middleware(){
     fi
     echo "Building version: $latestMiddlewareReleasedVersion"
     docker build -t televolution_middleware:$latestMiddlewareReleasedVersion .  || error_exit "Docker build failed."
-    docker run -d --restart=always --network host -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
+    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the middleware container."
     fi
@@ -200,6 +200,11 @@ build_images(){
     if [[ " ${selected_images[@]} " =~ " Build Middleware " ]]; then
         build_middleware
     fi
+    echo "Creating network between Appwrite and Middleware..."
+    docker network create myNetwork
+    docker network connect myNetwork appwrite
+    docker network connect myNetwork televolution_middleware
+    docker network inspect myNetwork
 }
 
 save_images(){
