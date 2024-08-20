@@ -200,14 +200,6 @@ build_images(){
     if [[ " ${selected_images[@]} " =~ " Build Middleware " ]]; then
         build_middleware
     fi
-<<<<<<< HEAD
-=======
-#     echo "Creating network between Appwrite and Middleware..."
-#     docker network create myNetwork
-#    sudo docker network connect myNetwork appwrite
-#     sudo docker network connect myNetwork televolution_middleware
-#     sudo docker network inspect myNetwork
->>>>>>> origin
 }
 
 save_images(){
