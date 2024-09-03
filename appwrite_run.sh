@@ -177,7 +177,7 @@ build_appwrite(){
 
     git pull || error_continue "Git pull failed. Skipping the step."
     docker compose build || error_exit "Failed to do compose"
-    docker compose up -d|| error_exit "Failed to build Appwrite."
+    docker compose up -d || error_exit "Failed to build Appwrite."
 
     cd ..
 
