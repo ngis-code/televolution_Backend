@@ -168,13 +168,24 @@ build_middleware(){
 build_appwrite(){
     export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
+    # if projectXbackend folder doesn't exists then git clone https://github.com/ngis-code/projectXbackend.git
+    if [ ! -d "appwrite" ]; then
+        git clone https://github.com/ngis-code/projectXbackend.git
+    fi
+
+    cd projectXbackend
+
+    docker compose up -d|| error_exit "Failed to build Appwrite."
+
+    cd ..
+
     # METHOD 1
     # curl -L -O https://appwrite.io/install/compose appwrite/docker-compose.yml || error_exit "Failed to download docker-compose file."
     # curl -L -O https://appwrite.io/install/env appwrite/.env || error_exit "Failed to download install file."
-    cd appwrite || error_exit "Directory docker does not exist."
-    docker compose up -d --remove-orphans || error_exit "Failed to build Appwrite."
-    showSuccess "Appwrite built successfully."
-    cd ..
+    # cd appwrite || error_exit "Directory docker does not exist."
+    # docker compose up -d --remove-orphans || error_exit "Failed to build Appwrite."
+    # showSuccess "Appwrite built successfully."
+    # cd ..
 
     # METHOD 2
     # docker run -it --rm \
