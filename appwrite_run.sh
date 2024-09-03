@@ -169,12 +169,13 @@ build_appwrite(){
     export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
     # if projectXbackend folder doesn't exists then git clone https://github.com/ngis-code/projectXbackend.git
-    if [ ! -d "appwrite" ]; then
+    if [ ! -d "projectXbackend" ]; then
         git clone https://github.com/ngis-code/projectXbackend.git
     fi
 
     cd projectXbackend
 
+    docker compose build || error_exit "Failed to do compose"
     docker compose up -d|| error_exit "Failed to build Appwrite."
 
     cd ..
