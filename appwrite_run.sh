@@ -175,6 +175,7 @@ build_appwrite(){
 
     cd projectXbackend
 
+    git pull || error_continue "Git pull failed. Skipping the step."
     docker compose build || error_exit "Failed to do compose"
     docker compose up -d|| error_exit "Failed to build Appwrite."
 
