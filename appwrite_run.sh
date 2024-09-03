@@ -170,12 +170,12 @@ build_appwrite(){
 
     # if projectXbackend folder doesn't exists then git clone https://github.com/ngis-code/projectXbackend.git
     if [ ! -d "projectXbackend" ]; then
-        git clone https://github.com/ngis-code/projectXbackend.git
+        curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip working.zip
+        unzip working.zip -d projectXbackend || error_exit "Failed to unzip the projectXbackend."
     fi
 
     cd projectXbackend
-
-    git pull || error_continue "Git pull failed. Skipping the step."
+    
     docker compose build || error_exit "Failed to do compose"
     docker compose up -d || error_exit "Failed to build Appwrite."
 
