@@ -238,6 +238,7 @@ save_images(){
         "appwrite/altair:0.3.0"
         "appwrite/requestcatcher:1.0.0"
         "appwrite/mailcatcher:1.0.0"
+        "televolution_middleware:$latestMiddlewareReleasedVersion"
     )
 
     choose_multiple_menu "Please select the Docker images to save (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
