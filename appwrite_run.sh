@@ -157,7 +157,7 @@ build_middleware(){
     fi
     echo "Building version: $latestMiddlewareReleasedVersion"
     docker build -t televolution_middleware:$latestMiddlewareReleasedVersion .  || error_exit "Docker build failed."
-    docker run -d --restart=always -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
+    docker run -d --restart=always --network host -p 3000:3000 --name televolution_middleware televolution_middleware:$latestMiddlewareReleasedVersion
     if [ $? -ne 0 ]; then
         error_exit "Failed to start the middleware container."
     fi
