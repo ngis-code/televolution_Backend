@@ -378,7 +378,7 @@ download_release(){
 
     for image in $selected_images; do
         echo "Downloading Image $image..."
-        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/${image}.tar" || { error_continue "Cannot download $image. Run 'cd $BUILD_DIR && curl -L -O \"https://github.com/ngis-code/televolution_Backend/releases/download/0.0.3/${image}.tar'"; continue; }
+        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar" || { error_continue "Cannot download $image. Run 'cd $BUILD_DIR && curl -L -O \"https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar'"; continue; }
     done
 
     showSuccess "Release downloaded successfully."
