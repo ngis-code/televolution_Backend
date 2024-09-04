@@ -282,24 +282,36 @@ load_appwrite_image(){
     cd ..
 
     echo "Running Appwrite..."
-    if [ ! -d "appwrite" ]; then
-        mkdir appwrite || error_exit "Failed to create directory appwrite."
-        cd appwrite || error_exit "Directory appwrite does not exist."
+    # if [ ! -d "projectXbackend" ]; then
+    #     mkdir appwrite || error_exit "Failed to create directory appwrite."
+    #     cd appwrite || error_exit "Directory appwrite does not exist."
         
-        echo "Fetching template env files as no env file exist..."
-        curl -L -O https://appwrite.io/install/compose || error_exit "Failed to download docker-compose file."
-        mv compose docker-compose.yml || error_exit "Failed to rename docker-compose file."
+    #     echo "Fetching template env files as no env file exist..."
+    #     curl -L -O https://appwrite.io/install/compose || error_exit "Failed to download docker-compose file."
+    #     mv compose docker-compose.yml || error_exit "Failed to rename docker-compose file."
 
-        curl -L -O https://appwrite.io/install/env || error_exit "Failed to download install file."
-        mv env .env || error_exit "Failed to rename install file."
+    #     curl -L -O https://appwrite.io/install/env || error_exit "Failed to download install file."
+    #     mv env .env || error_exit "Failed to rename install file."
         
-        cd ..
+    #     cd ..
+    # fi
+
+    # cd appwrite || error_exit "Directory appwrite does not exist."
+
+    # docker compose up -d || error_exit "Failed to build Appwrite."
+    # showSuccess "Images loaded successfully."
+
+    # cd ..
+
+    if [ ! -d "projectXbackend" ]; then
+        curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip' to download the projectXbackend."
+        unzip working.zip || error_exit "Failed to unzip the projectXbackend."
     fi
 
-    cd appwrite || error_exit "Directory appwrite does not exist."
+    cd projectXbackend
 
+    # docker compose build || error_exit "Failed to do compose"
     docker compose up -d || error_exit "Failed to build Appwrite."
-    showSuccess "Images loaded successfully."
 
     cd ..
 
