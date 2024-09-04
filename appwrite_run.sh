@@ -353,16 +353,26 @@ download_release(){
     cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
 
     options=(
+        "appwrite-dev"
         "traefik"
         "mariadb"
+        "redisinsight"
+        "adminer"
         "php"
         "python"
         "node"
         "ruby"
-        "appwrite"
         "redis"
         "executor"
         "assistant"
+        "proxy"
+        "php"
+        "node"
+        "ruby"
+        "python"
+        "altair"
+        "requestcatcher"
+        "mailcatcher"
         "televolution_middleware"
     )
 
