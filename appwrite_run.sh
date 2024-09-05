@@ -304,7 +304,9 @@ load_appwrite_image(){
     # cd ..
 
     if [ ! -d "projectXbackend" ]; then
-        curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip' to download the projectXbackend."
+        if [ ! -f "working.zip" ]; then
+            curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip' to download the projectXbackend."
+        fi
         unzip working.zip || error_exit "Failed to unzip the projectXbackend."
     fi
 
@@ -372,13 +374,22 @@ download_release(){
         "requestcatcher"
         "mailcatcher"
         "televolution_middleware"
+        "working.zip"
     )
 
     choose_multiple_menu "Please select the Docker images to download (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
 
     for image in $selected_images; do
-        echo "Downloading Image $image..."
-        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar" || { error_continue "Cannot download $image. Run 'cd $BUILD_DIR && curl -L -O \"https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar'"; continue; }
+        if [ "$image" == "working.zip" ]; then
+            cd ..
+            echo "Downloading Image $image..."
+            curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip' to download the projectXbackend."
+            unzip working.zip || error_exit "Failed to unzip the projectXbackend."
+            cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
+        else
+            echo "Downloading Image $image..."
+            curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar" || { error_continue "Cannot download $image. Run 'cd $BUILD_DIR && curl -L -O \"https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar'"; continue; }
+        fi
     done
 
     showSuccess "Release downloaded successfully."
