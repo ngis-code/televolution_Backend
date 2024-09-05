@@ -170,8 +170,8 @@ build_appwrite(){
 
     # if projectXbackend folder doesn't exists then git clone https://github.com/ngis-code/projectXbackend.git
     if [ ! -d "projectXbackend" ]; then
-        curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip' to download the projectXbackend."
-        unzip working.zip || error_exit "Failed to unzip the projectXbackend."
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip' to download the projectXbackend."
+        unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
     fi
 
     cd projectXbackend
@@ -304,10 +304,10 @@ load_appwrite_image(){
     # cd ..
 
     if [ ! -d "projectXbackend" ]; then
-        if [ ! -f "working.zip" ]; then
-            curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip' to download the projectXbackend."
+        if [ ! -f "projectxsource-latest.zip" ]; then
+            curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip' to download the projectXbackend."
         fi
-        unzip working.zip || error_exit "Failed to unzip the projectXbackend."
+        unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
     fi
 
     cd projectXbackend
@@ -374,17 +374,17 @@ download_release(){
         "requestcatcher"
         "mailcatcher"
         "televolution_middleware"
-        "working.zip"
+        "projectxsource-latest.zip"
     )
 
     choose_multiple_menu "Please select the Docker images to download (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
 
     for image in $selected_images; do
-        if [ "$image" == "working.zip" ]; then
+        if [ "$image" == "projectxsource-latest.zip" ]; then
             cd ..
             echo "Downloading Image $image..."
-            curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/projectXbackend/releases/download/v0.0.1/working.zip' to download the projectXbackend."
-            unzip working.zip || error_exit "Failed to unzip the projectXbackend."
+            curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip' to download the projectXbackend."
+            unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
             cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
         else
             echo "Downloading Image $image..."
