@@ -366,10 +366,6 @@ download_release(){
         "executor"
         "assistant"
         "proxy"
-        "php"
-        "node"
-        "ruby"
-        "python"
         "altair"
         "requestcatcher"
         "mailcatcher"
@@ -379,22 +375,47 @@ download_release(){
 
     choose_multiple_menu "Please select the Docker images to download (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
 
+    failed_downloads=()
+
     for image in $selected_images; do
-        if [ "$image" == "projectxsource-latest.zip" ]; then
-            cd ..
-            echo "Downloading Image $image..."
-            curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip' to download the projectXbackend."
-            unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
-            cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
-        else
-            echo "Downloading Image $image..."
-            curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar" || { error_continue "Cannot download $image. Run 'cd $BUILD_DIR && curl -L -O \"https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar'"; continue; }
-        fi
+        download_image "$image" || failed_downloads+=("$image")
     done
 
-    showSuccess "Release downloaded successfully."
+    if [ ${#failed_downloads[@]} -ne 0 ]; then
+        error_continue "Retrying failed downloads..."
+        for failed_image in "${failed_downloads[@]}"; do
+            download_image "$failed_image" || error_exit "Failed to download $failed_image again."
+        done
+    fi
 
+    showSuccess "All releases downloaded successfully."
     cd ..
+}
+
+download_image() {
+    image=$1
+    if [ "$image" == "projectxsource-latest.zip" ]; then
+        cd ..
+        echo "Downloading Image $image..."
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || {
+            error_continue "Failed to download $image."
+            cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
+            return 1
+        }
+        unzip projectxsource-latest.zip || {
+            error_continue "Failed to unzip $image."
+            cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
+            return 1
+        }
+        cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
+    else
+        echo "Downloading Image $image..."
+        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar" || {
+            error_continue "Failed to download $image."
+            return 1
+        }
+    fi
+    return 0
 }
 
 check_gh_installation(){
