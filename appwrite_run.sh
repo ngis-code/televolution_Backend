@@ -6,6 +6,9 @@ GREEN='\033[0;32m'
 BUILD_DIR="docker_image_builds"
 GITHUB_REPO="https://github.com/ngis-code/televolution_Backend"
 
+# Initializations
+export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
 showSuccess() {
     echo -e "${GREEN}$1${NC}"
     if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -141,8 +144,6 @@ function choose_multiple_menu() {
 }
 
 build_middleware(){
-    export DOCKER_DEFAULT_PLATFORM=linux/amd64
-
     if [ -d "televolution_Middleware" ]; then
         echo "Directory televolution_Middleware already exists."
     else
@@ -166,11 +167,8 @@ build_middleware(){
 }
 
 build_appwrite(){
-    export DOCKER_DEFAULT_PLATFORM=linux/amd64
-
-    # if projectXbackend folder doesn't exists then git clone https://github.com/ngis-code/projectXbackend.git
     if [ ! -d "projectXbackend" ]; then
-        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip' to download the projectXbackend."
+        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip" || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip' to download the projectXbackend."
         unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
     fi
 
@@ -228,20 +226,14 @@ save_images(){
         "appwrite-dev:latest"
         "mariadb:10.11"
         "traefik:2.11"
-        # "redis/redisinsight:latest"
-        # "adminer:latest"
         "redis:7.2.4-alpine"
         "openruntimes/executor:0.5.7"
         "appwrite/assistant:0.4.0"
-        # "openruntimes/proxy:0.3.1"
         "openruntimes/php:v3-8.0"
         "openruntimes/python:v3-3.9"
         "openruntimes/node:v3-16.0"
         "openruntimes/ruby:v3-3.0"
-        # "appwrite/altair:0.3.0"
-        # "appwrite/requestcatcher:1.0.0"
         "appwrite/appwrite:1.5.10"
-        # "appwrite/mailcatcher:1.0.0"
         "televolution_middleware:$latestMiddlewareReleasedVersion"
     )
 
@@ -264,16 +256,14 @@ load_appwrite_image(){
         "appwrite-dev"
         "mariadb"
         "traefik"
-        "redisinsight"
-        "adminer"
         "redis"
         "executor"
         "assistant"
-        "proxy"
+        "php"
         "python"
-        "altair"
-        "requestcatcher"
-        "mailcatcher"
+        "node"
+        "ruby"
+        "appwrite"
         "televolution_middleware"
     )
     choose_multiple_menu "Please select the Docker images to load (use arrow keys to navigate and right arrow to select):" selected_images "${options[@]}"
@@ -285,39 +275,18 @@ load_appwrite_image(){
 
     cd ..
 
-    echo "Running Appwrite..."
-    # if [ ! -d "projectXbackend" ]; then
-    #     mkdir appwrite || error_exit "Failed to create directory appwrite."
-    #     cd appwrite || error_exit "Directory appwrite does not exist."
-        
-    #     echo "Fetching template env files as no env file exist..."
-    #     curl -L -O https://appwrite.io/install/compose || error_exit "Failed to download docker-compose file."
-    #     mv compose docker-compose.yml || error_exit "Failed to rename docker-compose file."
-
-    #     curl -L -O https://appwrite.io/install/env || error_exit "Failed to download install file."
-    #     mv env .env || error_exit "Failed to rename install file."
-        
-    #     cd ..
-    # fi
-
-    # cd appwrite || error_exit "Directory appwrite does not exist."
-
-    # docker compose up -d || error_exit "Failed to build Appwrite."
-    # showSuccess "Images loaded successfully."
-
-    # cd ..
+    echo "Running Backend..."
 
     if [ ! -d "projectXbackend" ]; then
         if [ ! -f "projectxsource-latest.zip" ]; then
-            curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip' to download the projectXbackend."
+            curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip" || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip' to download the projectXbackend."
         fi
         unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
     fi
 
-    cd projectXbackend
+    cd projectXbackend || error_exit "Directory projectXbackend does not exist."
 
-    # docker compose build || error_exit "Failed to do compose"
-    docker compose up -d || error_exit "Failed to build Appwrite."
+    docker compose up -d || error_exit "Failed to start Backend."
 
     cd ..
 
@@ -358,21 +327,16 @@ download_release(){
 
     options=(
         "appwrite-dev"
-        "traefik"
         "mariadb"
-        "redisinsight"
-        "adminer"
+        "traefik"
+        "redis"
+        "executor"
+        "assistant"
         "php"
         "python"
         "node"
         "ruby"
-        "redis"
-        "executor"
-        "assistant"
-        "proxy"
-        "altair"
-        "requestcatcher"
-        "mailcatcher"
+        "appwrite"
         "televolution_middleware"
         "projectxsource-latest.zip"
     )
@@ -401,7 +365,7 @@ download_image() {
     if [ "$image" == "projectxsource-latest.zip" ]; then
         cd ..
         echo "Downloading Image $image..."
-        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip || {
+        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip" || {
             error_continue "Failed to download $image."
             cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
             return 1
