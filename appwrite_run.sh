@@ -170,7 +170,7 @@ build_appwrite(){
 
     # if projectXbackend folder doesn't exists then git clone https://github.com/ngis-code/projectXbackend.git
     if [ ! -d "projectXbackend" ]; then
-        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip' to download the projectXbackend."
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip' to download the projectXbackend."
         unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
     fi
 
@@ -305,7 +305,7 @@ load_appwrite_image(){
 
     if [ ! -d "projectXbackend" ]; then
         if [ ! -f "projectxsource-latest.zip" ]; then
-            curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip' to download the projectXbackend."
+            curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip' to download the projectXbackend."
         fi
         unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
     fi
@@ -397,7 +397,7 @@ download_image() {
     if [ "$image" == "projectxsource-latest.zip" ]; then
         cd ..
         echo "Downloading Image $image..."
-        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/projectxsource-latest.zip || {
+        curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/projectxsource-latest.zip || {
             error_continue "Failed to download $image."
             cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
             return 1
@@ -410,7 +410,7 @@ download_image() {
         cd "$BUILD_DIR" || error_exit "Directory $BUILD_DIR does not exist."
     else
         echo "Downloading Image $image..."
-        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.4/${image}.tar" || {
+        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/0.0.5/${image}.tar" || {
             error_continue "Failed to download $image."
             return 1
         }
