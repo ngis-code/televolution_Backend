@@ -12,14 +12,14 @@ export DOCKER_DEFAULT_PLATFORM=linux/amd64
 
 showSuccess() {
     echo -e "${GREEN}$1${NC}"
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [[ "$OSTYPE" == darwin* ]]; then
         osascript -e 'beep 1'
     fi
 }
 
 error_exit() {
     echo -e "${RED}$1${NC}" 1>&2
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [[ "$OSTYPE" == darwin* ]]; then
         osascript -e 'beep 2'
     fi
     exit 1
@@ -27,7 +27,7 @@ error_exit() {
 
 error_continue() {
     echo -e "${RED}$1${NC}" 1>&2
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+    if [[ "$OSTYPE" == darwin* ]]; then
         osascript -e 'beep 2'
     fi
 }
