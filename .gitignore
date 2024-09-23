@@ -1,7 +1,7 @@
 docker_image_builds/
 televolution_Middleware/
 projectXbackendd/
+projectXbackend/
 *.zip
 *.tar
 *.tar.gz
-projectxsource-latest/
