@@ -307,6 +307,8 @@ clean_docker(){
 }
 
 download_release(){
+    echo "Downloading release $LATEST_VERSION..."
+
     if [ -d "$BUILD_DIR" ]; then
         read -p "Directory $BUILD_DIR already exists. Do you want to delete it? (y/n): " delete_dir
         if [ "$delete_dir" != "y" ]; then
