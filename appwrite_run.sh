@@ -168,12 +168,12 @@ build_middleware(){
 }
 
 build_appwrite(){
-    if [ ! -d "projectxsource-latest" ]; then
+    if [ ! -d "projectXbackend" ]; then
         curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/${LATEST_VERSION}/projectxsource-latest.zip" || error_exit "Failed to download the projectxsource-latest. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/${LATEST_VERSION}/projectxsource-latest.zip' to download the projectxsource-latest."
         unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectxsource-latest."
     fi
 
-    cd "projectxsource-latest"
+    cd "projectXbackend"
 
     docker compose build || error_exit "Failed to do compose"
     docker compose up -d || error_exit "Failed to build Appwrite."
@@ -278,14 +278,7 @@ load_appwrite_image(){
 
     echo "Running Backend..."
 
-    if [ ! -d "projectXbackend" ]; then
-        if [ ! -f "projectxsource-latest.zip" ]; then
-            curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/${LATEST_VERSION}/projectxsource-latest.zip" || error_exit "Failed to download the projectXbackend. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/${LATEST_VERSION}/projectxsource-latest.zip' to download the projectXbackend."
-        fi
-        unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectXbackend."
-    fi
-
-    cd projectXbackend || error_exit "Directory projectXbackend does not exist."
+    cd docker || error_exit "Directory 'docker' does not exist."
 
     docker compose up -d || error_exit "Failed to start Backend."
 
