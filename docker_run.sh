@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "This script is not being maintained anymore. Please use appwrite_run.sh instead."
+exit 1
+
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 GREEN='\033[0;32m'
