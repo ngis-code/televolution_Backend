@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-10-03T17:38:30.940Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" etag="uFgygNk8z3kUOZ8sc9Ov" version="24.5.4" type="github">
+<mxfile host="app.diagrams.net" modified="2024-10-03T18:14:43.565Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36" etag="Uehb6oIp3spWenzAzYku" version="24.5.4" type="github">
   <diagram name="Page-1" id="QVdheb5jmeMty-fEyVKJ">
-    <mxGraphModel dx="1567" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1194" dy="497" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -120,11 +120,11 @@
         <mxCell id="ntUH-E0p4cSO-epYr9VH-5" value="doc2 : &quot;abc&quot;" style="whiteSpace=wrap;html=1;labelBackgroundColor=none;fillColor=#B2C9AB;strokeColor=#788AA3;fontColor=#46495D;" vertex="1" parent="ntUH-E0p4cSO-epYr9VH-2">
           <mxGeometry x="10" y="30" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="ntUH-E0p4cSO-epYr9VH-62" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="ntUH-E0p4cSO-epYr9VH-8" target="XJFTiHafAGhN_DBO5whV-5">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
         <mxCell id="k76rSSgDdyUt8fv63e5w-1" value="This will be bi-directional. We need to know what is there before we push if we see an issue or also good idea just to know what is there before committing and overwrghting. Might also be a good idea to pull what is already on the ship as a backup incase we overwright something we should not have." style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#46495D;" vertex="1" parent="1">
           <mxGeometry x="40" y="480" width="420" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ntUH-E0p4cSO-epYr9VH-68" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="ntUH-E0p4cSO-epYr9VH-8" target="XJFTiHafAGhN_DBO5whV-5">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ntUH-E0p4cSO-epYr9VH-8" value="Global Ship" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="180" y="290" width="120" height="60" as="geometry" />
@@ -220,14 +220,11 @@
         <mxCell id="ntUH-E0p4cSO-epYr9VH-53" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" source="ntUH-E0p4cSO-epYr9VH-48" target="ntUH-E0p4cSO-epYr9VH-41" parent="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="ntUH-E0p4cSO-epYr9VH-57" value="SHIP" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="1030" y="35" width="50" height="30" as="geometry" />
+        <mxCell id="ntUH-E0p4cSO-epYr9VH-57" value="SHIP 1" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="1025" y="35" width="60" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="ntUH-E0p4cSO-epYr9VH-58" value="SERVER" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
-          <mxGeometry x="65" y="10" width="70" height="30" as="geometry" />
-        </mxCell>
-        <mxCell id="ntUH-E0p4cSO-epYr9VH-63" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="XJFTiHafAGhN_DBO5whV-18" target="ntUH-E0p4cSO-epYr9VH-36">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="ntUH-E0p4cSO-epYr9VH-58" value="MAIN SERVER" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="45" y="10" width="110" height="30" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
