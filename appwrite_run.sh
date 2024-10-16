@@ -173,6 +173,7 @@ build_appwrite(){
     fi
 
     cd "console"
+    git pull || error_continue "Git pull failed. Continuing with old changes."
     docker compose build -t televolution-console . || error_exit "Failed to do compose"
     cd ..
 
