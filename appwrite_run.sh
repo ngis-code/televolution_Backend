@@ -168,33 +168,19 @@ build_middleware(){
 }
 
 build_appwrite(){
-    if [ ! -d "projectXbackend" ]; then
-        curl -L -O "https://github.com/ngis-code/televolution_Backend/releases/download/${LATEST_VERSION}/projectxsource-latest.zip" || error_exit "Failed to download the projectxsource-latest. Run 'curl -L -O https://github.com/ngis-code/televolution_Backend/releases/download/${LATEST_VERSION}/projectxsource-latest.zip' to download the projectxsource-latest."
-        unzip projectxsource-latest.zip || error_exit "Failed to unzip the projectxsource-latest."
+    if [ ! -d "console" ]; then
+        git clone --branch working --single-branch https://github.com/raman04-byte/console || error_exit "Git clone failed."
     fi
 
-    cd "projectXbackend"
-
-    docker compose build || error_exit "Failed to do compose"
-    docker compose up -d || error_exit "Failed to build Appwrite."
-
+    cd "console"
+    docker compose build -t televolution-console . || error_exit "Failed to do compose"
     cd ..
 
-    # METHOD 1
-    # curl -L -O https://appwrite.io/install/compose appwrite/docker-compose.yml || error_exit "Failed to download docker-compose file."
-    # curl -L -O https://appwrite.io/install/env appwrite/.env || error_exit "Failed to download install file."
-    # cd appwrite || error_exit "Directory docker does not exist."
-    # docker compose up -d --remove-orphans || error_exit "Failed to build Appwrite."
-    # showSuccess "Appwrite built successfully."
-    # cd ..
+    cd docker
+    docker compose up -d || error_exit "Failed to build Appwrite."
+    cd ..
 
-    # METHOD 2
-    # docker run -it --rm \
-    # --volume /var/run/docker.sock:/var/run/docker.sock \
-    # --volume "$(pwd)"/appwrite:/usr/src/code/appwrite:rw \
-    # --entrypoint="install" \
-    # appwrite/appwrite:1.5.7 || error_exit "Failed to install Appwrite."
-    # showSuccess "Appwrite installed successfully."
+    showSuccess "Appwrite built successfully."
 }
 
 build_images(){
