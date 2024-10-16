@@ -169,7 +169,7 @@ build_middleware(){
 
 build_appwrite(){
     if [ ! -d "console" ]; then
-        git clone --branch working --single-branch https://github.com/raman04-byte/console || error_exit "Git clone failed."
+        git clone --branch working --single-branch --depth=1 https://github.com/raman04-byte/console || error_exit "Git clone failed."
     fi
 
     cd "console"
