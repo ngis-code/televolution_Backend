@@ -169,12 +169,12 @@ build_middleware(){
 
 build_appwrite(){
     if [ ! -d "console" ]; then
-        git clone --branch working --single-branch --depth=1 https://github.com/raman04-byte/console || error_exit "Git clone failed."
+        git clone --branch working-branch --single-branch --depth=1 https://github.com/raman04-byte/console || error_exit "Git clone failed."
     fi
 
     cd "console"
     git pull || error_continue "Git pull failed. Continuing with old changes."
-    docker compose build -t televolution-console . || error_exit "Failed to do compose"
+    docker build -t televolution-console . || error_exit "Failed to do compose"
     cd ..
 
     cd docker
